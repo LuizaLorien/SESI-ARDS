@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "��#\u0000 \u0000S\u0000E\u0000S\u0000I\u0000-\u0000A\u0000R\u0000D\u0000S\u0000\r\u0000 \u0000",
   "main": "index.js",
+  "type": "module",
   "scripts": {
+    "dev": "nodemon ./server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,6 +23,7 @@
     "nodemon": "^3.1.4"
   },
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "uuid": "^10.0.0"
   }
 }
