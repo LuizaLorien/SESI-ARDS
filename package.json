@@ -1,0 +1,26 @@
+{
+  "name": "sesi-ards",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000S\u0000E\u0000S\u0000I\u0000-\u0000A\u0000R\u0000D\u0000S\u0000\r\u0000 \u0000",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LuizaLorien/SESI-ARDS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LuizaLorien/SESI-ARDS/issues"
+  },
+  "homepage": "https://github.com/LuizaLorien/SESI-ARDS#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
