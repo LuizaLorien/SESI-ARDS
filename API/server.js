@@ -85,6 +85,47 @@ if(method === 'GET' && url === '/user'){
         })
       })
     })
+  }else if(method === "DELETE" && url.startsWith('/users/')){
+    const id = url.split[2]
+
+    readData((err,data) =>{
+      if(err){
+        return writeResponse(500, {mensagem: "Erro ao ler os dados"})
+      }
+
+      const index = data.findIndex(data => data.id === id)
+
+      if(index === -1){
+        return writeResponse(404, {mensagem: "Usuário não encontrado"})
+      }
+
+      data.splice(index,1)
+
+      writeData(data, (err)=>{
+        if(err){
+          return writeResponse(500, {mensagem: "Erro ao ler os dados."})
+        }
+
+        writeResponse(201, {mensagem: `Usuário com o ID: ${id} apagada com sucesso.`})
+      })
+    })
+  }else if(method === "GET" && url.startsWith('/users/')){
+    const id = url.split('/')[2];
+    
+
+    readData((err, data) => {
+      if (err) {
+        return writeResponse(500, { 
+          mensagem: "Erro ao ler os dados. Por favor, tente novamente." });
+      }
+
+      const usersData = data.filter(data => {
+        recipe.id((data) => data.includes(id))
+      })
+
+      console.log(usersData)
+      res.end()
+    })
   }
 
 })
