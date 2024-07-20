@@ -1,113 +1,110 @@
 import React from 'react';
-import styled from 'styled-components';
-import Container from 'react-bootstrap/Container';
+import { Container, Box, TextField, Button, Typography } from '@mui/material';
+import { styled } from '@mui/system';
+import { useNavigate } from 'react-router-dom'; 
 
-const StyledContainer = styled(Container)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f8f9fa; 
-  position: relative; 
-`;
+const StyledContainer = styled(Container)({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '100vh',
+  backgroundColor: '#ffffff',
+  position: 'relative',
+});
 
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 450px;
-  max-height: calc(100vh - 40px); 
-  overflow-y: auto; 
-  position: relative; 
-  z-index: 1; 
-`;
+const Content = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  padding: '20px',
+  backgroundColor: '#ffffff',
+  borderRadius: '8px',
+  boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+  width: '450px',
+  maxHeight: 'calc(100vh - 40px)',
+  overflowY: 'auto',
+  position: 'relative',
+  zIndex: 1,
+});
 
-const StyledForm = styled.form`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between; 
-  height: 100%;
-`;
+const StyledForm = styled('form')({
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  height: '100%',
+});
 
-const FormGroup = styled.div`
-  margin-bottom: 15px;
-  width: 100%;
-`;
+const FormGroup = styled(Box)({
+  marginBottom: '15px',
+  width: '100%',
+});
 
-const Label = styled.label`
-  margin-bottom: 5px;
-  display: block;
-`;
+const Input = styled(TextField)({
+  width: '95%',
+  '& .MuiInputBase-input': {
+    padding: '10px',
+    fontSize: '16px',
+    fontFamily: 'Roboto, sans-serif',
+  },
+  '& .MuiInputBase-input::placeholder': {
+    fontWeight: 400,
+    fontSize: '20px',
+    fontFamily: 'Roboto, sans-serif',
+  },
+});
 
-const Input = styled.input`
-  width: 95%;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-family: 'Roboto', sans-serif;
-  ::placeholder {
-    font-weight: 400;
-    font-size: 20px;
-    font-family: 'Roboto', sans-serif;
-  }
-`;
+const SubmitButton = styled(Button)({
+  width: '120px',
+  height: '50px',
+  padding: '10px',
+  backgroundColor: '#004598',
+  color: 'white',
+  borderRadius: '15px',
+  fontSize: '16px',
+  transition: 'background-color 0.3s ease',
+  '&:hover': {
+    backgroundColor: '#0056b3',
+  },
+  marginBottom: '50px',
+});
 
-const Button = styled.button`
-  width: 120px;
-  height: 50px; 
-  padding: 10px;
-  background-color: #004598;
-  color: white;
-  border: none;
-  border-radius: 15px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-bottom: 50px;
-  font-size: 16px;
-  &:hover {
-    background-color: #0056b3;
-  }
-`;
+const SignUpButton = styled(Button)({
+  fontSize: '15px',
+  marginTop: '10px',
+  backgroundColor: 'transparent',
+  color: '#007bff',
+  border: 'none',
+  cursor: 'pointer',
+  marginBottom: '30px',
+});
 
-const SignUpButton = styled.button`
-  font-size: 14px;
-  margin-top: 10px; 
-  background-color: transparent;
-  color: #007bff;
-  border: none;
-  cursor: pointer;
-  margin-bottom: 30px;
-  font-size: 15px;
-`;
-
-const LoginTitle = styled.h1`
+const LoginTitle = styled(Typography)`
   color: #002B6D;
-  font-family: Roboto, sans-serif;
-  margin-top: 50px;
+  font-family: 'Roboto', sans-serif;
+  margin-top: 20px;
+  margin-bottom: 20px;
   font-size: 60px;
-  
-  
-  
 `;
 
-const BackgroundImage = styled.img`
-  position: absolute;
-  top: 0;
-  left: 50%; 
-  transform: translateX(-50%); 
-  width: 200px; 
-  height: 200px; 
-  z-index: 1; 
-`;
+const BackgroundImage = styled('img')({
+  position: 'absolute',
+  top: 0,
+  left: '50%',
+  transform: 'translateX(-50%)',
+  width: '200px',
+  height: '200px',
+  zIndex: 1,
+});
 
 function ContainerLogin() {
+  const navigate = useNavigate(); 
+
+  const handleSignUpClick = () => {
+    navigate('/cadastro'); // Para ir para a tela de cadastro
+  };
+
   return (
     <>
       <BackgroundImage src="./src/assets/sesi-senai.png" alt="Background" />
@@ -116,26 +113,24 @@ function ContainerLogin() {
           <LoginTitle>Login</LoginTitle>
           <StyledForm>
             <FormGroup>
-              <Label htmlFor="email"></Label>
               <Input
+                label="Digite seu email"
                 type="email"
-                id="email"
-                placeholder="Digite seu email"
-                required  // Requiremento basico do front
+                variant="outlined"
+                required
               />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="password"></Label>
               <Input
+                label="Digite sua senha"
                 type="password"
-                id="password"
-                placeholder="Digite sua senha"
-                required  // // Requiremento basico do front
-                minLength={6}  // Mínimo de 6 caracteres - // Requiremento basico do front
+                variant="outlined"
+                required
+                inputProps={{ minLength: 6 }}
               />
             </FormGroup>
-            <SignUpButton>Quero me cadastrar</SignUpButton>
-            <Button type="submit">Entrar</Button>
+            <SignUpButton onClick={handleSignUpClick}>Quero me cadastrar</SignUpButton>
+            <SubmitButton type="submit">Entrar</SubmitButton>
           </StyledForm>
         </Content>
       </StyledContainer>

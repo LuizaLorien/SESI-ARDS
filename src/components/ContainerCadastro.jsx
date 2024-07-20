@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import Container from 'react-bootstrap/Container';
+import { Container, Box, TextField, Button, Typography } from '@mui/material';
+import { styled } from '@mui/system';
+import { useNavigate } from 'react-router-dom'; 
 
 const StyledContainer = styled(Container)`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f8f9fa; 
-  position: relative; 
+  background-color: #ffffff;
+  position: relative;
 `;
 
-const Content = styled.div`
+const Content = styled(Box)`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -20,92 +21,65 @@ const Content = styled.div`
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 450px;
-  max-height: calc(100vh - 40px); 
-  overflow-y: auto; 
-  position: relative; 
-  z-index: 1; 
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  position: relative;
+  z-index: 1;
 `;
 
-const StyledForm = styled.form`
+const StyledForm = styled('form')`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between; 
+  justify-content: space-between;
   height: 100%;
 `;
 
-const FormGroup = styled.div`
-  margin-bottom: 15px;
-  width: 100%;
-`;
+const Input = styled(TextField)({
+  width: '95%',
+  '& .MuiInputBase-input': {
+    padding: '10px',
+    fontSize: '16px',
+    fontFamily: 'Roboto, sans-serif',
+  },
+  '& .MuiInputBase-input::placeholder': {
+    fontWeight: 400,
+    fontSize: '20px',
+    fontFamily: 'Roboto, sans-serif',
+  },
+});
 
-const Label = styled.label`
-  margin-bottom: 5px;
-  display: block;
-`;
-
-const Input = styled.input`
-  width: 95%;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-family: 'Roboto', sans-serif;
-  margin-bottom: 15px; 
-  ::placeholder {
-    font-weight: 400;
-    font-size: 20px;
-    font-family: 'Roboto', sans-serif;
-  }
-`;
-
-const Button = styled.button`
-  width: 120px;
-  height: 50px; 
-  padding: 10px;
-  background-color: #004598;
-  color: white;
-  border: none;
-  border-radius: 15px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-bottom: 50px;
-  font-size: 16px;
-  &:hover {
-    background-color: #0056b3;
-  }
-`;
-
-const CadastroTitle = styled.h1`
+const CadastroTitle = styled(Typography)`
   color: #002B6D;
-  font-family: Roboto, sans-serif;
-  margin-top: 50px;
+  font-family: 'Roboto', sans-serif;
+  margin-top: 20px;
+  margin-bottom: 20px;
   font-size: 60px;
 `;
 
-const BackgroundImage = styled.img`
+const BackgroundImage = styled('img')`
   position: absolute;
   top: 0;
-  left: 50%; 
-  transform: translateX(-50%); 
-  width: 200px; 
-  height: 200px; 
-  z-index: 1; 
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 200px;
+  z-index: 1;
 `;
 
 const validateCPF = (cpf) => {
-  cpf = cpf.replace(/[^\d]/g, ''); 
+  cpf = cpf.replace(/[^\d]/g, '');
   if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
   
   let sum = 0;
-  for (let i = 1; i <= 9; i++) sum += parseInt(cpf.substring(i-1, i)) * (11 - i);
+  for (let i = 1; i <= 9; i++) sum += parseInt(cpf.substring(i - 1, i)) * (11 - i);
   let remainder = (sum * 10) % 11;
   if (remainder === 10 || remainder === 11) remainder = 0;
   if (remainder !== parseInt(cpf.substring(9, 10))) return false;
 
   sum = 0;
-  for (let i = 1; i <= 10; i++) sum += parseInt(cpf.substring(i-1, i)) * (12 - i);
+  for (let i = 1; i <= 10; i++) sum += parseInt(cpf.substring(i - 1, i)) * (12 - i);
   remainder = (sum * 10) % 11;
   if (remainder === 10 || remainder === 11) remainder = 0;
   if (remainder !== parseInt(cpf.substring(10, 11))) return false;
@@ -116,6 +90,7 @@ const validateCPF = (cpf) => {
 function ContainerCadastro() {
   const [cpf, setCpf] = useState('');
   const [cpfError, setCpfError] = useState('');
+  const navigate = useNavigate(); // inicializar a navegação do usuario
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -123,8 +98,13 @@ function ContainerCadastro() {
       setCpfError('CPF inválido');
     } else {
       setCpfError('');
-    
     }
+    navigate('/login'); // apos cadastrar retornar o usuario para a tela de login e assim ele logar com os dados cadastrados
+  };
+
+  const handleBackClick = () => {
+    navigate('/login'); // pra quando voltar para a tela de login
+    
   };
 
   return (
@@ -132,51 +112,55 @@ function ContainerCadastro() {
       <BackgroundImage src="./src/assets/sesi-senai.png" alt="Background" />
       <StyledContainer>
         <Content>
-          <CadastroTitle>Cadastre-se</CadastroTitle>
+          <CadastroTitle variant="h1">Cadastre-se</CadastroTitle>
           <StyledForm onSubmit={handleSubmit}>
-            <FormGroup>
-              <Label htmlFor="name"></Label>
-              <Input
-                type="name"
-                id="name"
-                placeholder="Digite seu nome completo"
-                required
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label htmlFor="email"></Label>
-              <Input
-                type="email"
-                id="email"
-                placeholder="Digite seu email"
-                required
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label htmlFor="password"></Label>
-              <Input
-                type="password"
-                id="password"
-                placeholder="Digite sua senha"
-                required
-                minLength={6}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label htmlFor="cpf"></Label>
-              <Input
-                type="text"
-                id="cpf"
-                placeholder="Digite seu CPF"
-                value={cpf}
-                onChange={(e) => setCpf(e.target.value)}
-                required
-                minLength={11}
-                maxLength={14}
-              />
-              {cpfError && <span style={{ color: 'red' }}>{cpfError}</span>}
-            </FormGroup>
-            <Button type="submit">Cadastrar</Button>
+            <Input
+              label="Nome Completo"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              required
+            />
+            <Input
+              label="Digite seu email"
+              type="email"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              required
+            />
+            <Input
+              label="Digite sua senha"
+              type="password"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              required
+              inputProps={{ minLength: 6 }}
+            />
+            <Input
+              label="Digite seu CPF"
+              type="text"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              required
+              value={cpf}
+              onChange={(e) => setCpf(e.target.value)}
+              error={!!cpfError}
+              helperText={cpfError}
+              inputProps={{ maxLength: 14 }}
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2, mb: 2, width: '120px', height: '50px', borderRadius: '15px' }}> Cadastrar </Button>
+            <Button
+              variant="text"
+              color="primary"
+              onClick={handleBackClick}
+              sx={{ mb: 2 }}> Voltar para o Login </Button>
           </StyledForm>
         </Content>
       </StyledContainer>
