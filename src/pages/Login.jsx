@@ -42,9 +42,9 @@ const FormGroup = styled(Box)({
 });
 
 const Input = styled(TextField)({
-  width: '95%',
+  width: '100%',
   '& .MuiInputBase-input': {
-    padding: '10px',
+    padding: '15px',
     fontSize: '16px',
     fontFamily: 'Roboto, sans-serif',
   },
