@@ -4,6 +4,7 @@ import { URLSearchParams } from "url";
 import {v4 as uuidv4 } from "uuid"
 import writeData from "./writeData.js";
 import readData from "./readData.js";
+import { read } from "fs";
 const PORT = process.env.PORT
 
 
@@ -120,7 +121,7 @@ if(method === 'GET' && url === '/user'){
       }
 
       const usersData = data.filter(data => {
-        recipe.id((data) => data.includes(id))
+        recipe.id((item) => item.includes(id))
       })
 
       console.log(usersData)
@@ -129,14 +130,6 @@ if(method === 'GET' && url === '/user'){
   }
 
 })
-
-
-
-  
-   
-
-
-
 
 server.listen(PORT, ()=>{
     console.log(`Servidor on PORT ${PORT}`)
