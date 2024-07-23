@@ -76,7 +76,7 @@ function CustomDay(props) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="calendar-container">
-        <DateCalendar
+        <DateCalendar showDaysOutsideCurrentMonth fixedWeekNumber={3}
           defaultValue={initialValue}
           onChange={handleDayClick}
           slots={{
