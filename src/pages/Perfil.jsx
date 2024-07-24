@@ -4,24 +4,24 @@ import { styled } from '@mui/system';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useNavigate } from 'react-router-dom'; 
+import "../styles/pages.css";
 
 const StyledContainer = styled(Container)({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
   height: '100vh',
-  backgroundColor: '#7DA0CA',
+  width: '100vw',
 });
 
 const StyledContent = styled(Box)({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  padding: '20px',
-  backgroundColor: 'white',
-  borderRadius: '8px',
-  boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-  width: '100%',
+  padding: '10px',
+  borderRadius: '15px',
+  boxShadow: '0 0 10px rgba(255, 255, 255, 0.1)',
+  width: '100vw',
   maxHeight: 'calc(100vh - 40px)',
   overflowY: 'auto',
   position: 'relative',
@@ -36,9 +36,10 @@ const StyledPaper = styled(Paper)({
 
 const StyledAvatarBox = styled(Box)({
   display: 'flex',
+  marginTop: '120px',
   flexDirection: 'column',
   alignItems: 'center',
-  marginBottom: '10px',
+  marginBottom: '10px'
 });
 
 const StyledButton = styled(Button)({
@@ -116,9 +117,10 @@ const ProfilePage = () => {
   };
 
   return (
-    <StyledContainer>
+    <section>
+      <StyledContainer>
       <StyledContent>
-        <Grid container spacing={4} justifyContent="center">
+        <Grid container spacing={1} justifyContent="center">
           {/* Coluna da esquerda */}
           <Grid item xs={12} md={3}>
             <StyledPaper>
@@ -135,12 +137,12 @@ const ProfilePage = () => {
           {/* Coluna da direita */}
           <Grid item xs={12} md={9}>
             <StyledPaper>
-              <Grid container spacing={2}>
+              <Grid container spacing={3}>
                 {/* Seção da foto de perfil e dados pessoais */}
                 <Grid item xs={12} md={4}>
                   <StyledAvatarBox>
-                    <Box textAlign="center" style={{ marginBottom: '10px' }}>
-                      <Avatar alt="Profile Picture" src={profileImage} sx={{ width: '150px', height: '150px' }} />
+                    <Box textAlign="center" style={{ marginBottom: '40px' }}>
+                      <Avatar alt="Profile Picture" src={profileImage} sx={{ width: '200px', height: '190px' }} />
                     </Box>
                     <input
                       accept="image/*"
@@ -261,6 +263,8 @@ const ProfilePage = () => {
         </Grid>
       </StyledContent>
     </StyledContainer>
+    </section>
+    
   );
 };
 
