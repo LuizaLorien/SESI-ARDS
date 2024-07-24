@@ -16,8 +16,10 @@
   "dependencies": {
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^5.16.4",
     "@mui/material": "^5.16.4",
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
+    "@mui/x-data-grid": "^7.11.0",
     "@mui/x-date-pickers": "^7.11.0",
     "bootstrap": "^5.3.3",
     "dayjs": "^1.11.12",

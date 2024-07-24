@@ -6,7 +6,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { PickersDay } from '@mui/x-date-pickers/PickersDay';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { Button } from '@mui/material';
-import './Calendario.css'; 
+import './Calendario.css';
 
 const initialValue = dayjs('2024-07-01');
 
@@ -18,7 +18,6 @@ function CustomDay(props) {
 
   return (
     <Badge
-      key={day.toString()}
       overlap="circular"
       badgeContent={isSelected ? (markType === 'azul' ? '🔵' : '🔴') : undefined}
       classes={{ badge: isSelected ? (markType === 'azul' ? 'custom-badge-azul' : 'custom-badge-vermelho') : '' }}
@@ -28,7 +27,7 @@ function CustomDay(props) {
   );
 }
 
- function CustomCalendar() {
+function CustomCalendar() {
   const [markedDays, setMarkedDays] = useState([
     { date: 1, type: 'azul' },
     { date: 2, type: 'vermelho' },
@@ -72,11 +71,12 @@ function CustomDay(props) {
     }
   };
 
-  const BasicDateCalendar = ()=>{
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="calendar-container">
-        <DateCalendar showDaysOutsideCurrentMonth fixedWeekNumber={3}
+        <DateCalendar
+          showDaysOutsideCurrentMonth
+          fixedWeekNumber={3}
           defaultValue={initialValue}
           onChange={handleDayClick}
           slots={{
@@ -100,6 +100,5 @@ function CustomDay(props) {
     </LocalizationProvider>
   );
 }
- }
 
- export default BasicDateCalendar;
+export default CustomCalendar;
