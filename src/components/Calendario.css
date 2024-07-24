@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+}
+
+#root{
+  background-color: #ACC3DE;
+  display: flex;
+  flex-direction: row;
+}
+
+.sidebar-reuniao{
+  width: 347px;
+  height: 1000px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 25px;
+  gap: 30px;
+  background-color: #fff;
+  filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.493));
+}
+.title-h1{
+  margin-bottom:  50px;
+}
+.hr{
+  margin-top: 20px;
+  height: 3px;
+  width: auto;
+  border-radius: 5px;
+  background-color: rgb(0, 19, 49);
+}
+
+.card1{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  background-color: rgb(255, 255, 255);
+  width: 300px;
+  height: 100px;
+  filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.329));
+  margin-bottom: 20px;
+}
+.card2{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  background-color: rgb(255, 255, 255);
+  width: 300px;
+  height: 100px;
+  filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.329));
+}
+
+ul{
+  list-style: none;
+}
+
+.calendar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh; 
+}
+
+.MuiBadge-root{
+  background-color: #fff;
+  height: 60px;
+  border-radius: 20px;
+  width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.MuiOutlinedInput-root {
+  height: 30px;
+}
+
+
+
+.custom-badge-azul .MuiBadge-badge {
+  background-color: blue;
+  color: blue;
+}
+
+.custom-badge-vermelho .MuiBadge-badge {
+  background-color: red;
+  color: red;
+}
+
+.button-container {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%; 
+}
+
+.custom-button {
+  width: 500px; 
+  height: 50px; 
+  margin: 10px 0; 
+  font-size: 1rem;
+}
+
+

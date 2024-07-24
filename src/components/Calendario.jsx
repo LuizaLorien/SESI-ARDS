@@ -6,18 +6,16 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { PickersDay } from '@mui/x-date-pickers/PickersDay';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { Button } from '@mui/material';
-import './Calendario.css';
+import './Calendario.css'; 
 
 const initialValue = dayjs('2024-07-01');
-
 function CustomDay(props) {
   const { markedDays, day, outsideCurrentMonth, ...other } = props;
   const isSelected = !outsideCurrentMonth && markedDays.some(markedDay => markedDay.date === day.date());
-
   const markType = isSelected ? markedDays.find(markedDay => markedDay.date === day.date()).type : null;
-
   return (
     <Badge
+      key={day.toString()}
       overlap="circular"
       badgeContent={isSelected ? (markType === 'azul' ? '🔵' : '🔴') : undefined}
       classes={{ badge: isSelected ? (markType === 'azul' ? 'custom-badge-azul' : 'custom-badge-vermelho') : '' }}
@@ -26,8 +24,7 @@ function CustomDay(props) {
     </Badge>
   );
 }
-
-function CustomCalendar() {
+ function CustomCalendar() {
   const [markedDays, setMarkedDays] = useState([
     { date: 1, type: 'azul' },
     { date: 2, type: 'vermelho' },
@@ -35,7 +32,6 @@ function CustomCalendar() {
     { date: 15, type: 'azul' }
   ]);
   const [selectedDays, setSelectedDays] = useState([]);
-
   const handleDayClick = (day) => {
     const date = day.date();
     setSelectedDays(prev => {
@@ -46,7 +42,6 @@ function CustomCalendar() {
       }
     });
   };
-
   const handleConfirm = () => {
     if (selectedDays.length > 0) {
       const newMarkedDays = [...markedDays];
@@ -64,19 +59,39 @@ function CustomCalendar() {
       alert("Por favor, selecione os dias para confirmar.");
     }
   };
-
   const handleClear = () => {
     if (window.confirm("Você realmente deseja cancelar todas as marcações?")) {
       setMarkedDays([]);
     }
   };
 
+
   return (
+    <> 
+    <div className="sidebar-reuniao">
+    <span className="title-h1">
+      <h1>Reuniões Marcadas</h1>
+      <div className='hr'/>
+    </span>
+    <ul>
+      <li>
+        <div className='card1'>
+          <h2>Nome do do cara</h2>
+        </div>
+      </li>
+      <li>
+        <div className='card1'>
+          <h2>Nome do do cara</h2>
+        </div>
+      </li>
+      </ul>
+    </div>
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="calendar-container">
-        <DateCalendar
-          showDaysOutsideCurrentMonth
-          fixedWeekNumber={3}
+      <span className="title">
+        <h1>Calendário</h1>
+      </span>
+        <DateCalendar showDaysOutsideCurrentMonth fixedWeekNumber={3}
           defaultValue={initialValue}
           onChange={handleDayClick}
           slots={{
@@ -98,7 +113,11 @@ function CustomCalendar() {
         </div>
       </div>
     </LocalizationProvider>
+    
+    </>
   );
+    
 }
 
-export default CustomCalendar;
+ 
+ export default CustomCalendar;
