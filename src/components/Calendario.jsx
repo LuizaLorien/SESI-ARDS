@@ -1,123 +1,164 @@
-import React, { useState } from 'react';
-import dayjs from 'dayjs';
-import Badge from '@mui/material/Badge';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { PickersDay } from '@mui/x-date-pickers/PickersDay';
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import { Button } from '@mui/material';
-import './Calendario.css'; 
+import React, { useState } from 'react'
+import { formatDate } from '@fullcalendar/core'
+import FullCalendar from '@fullcalendar/react'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import interactionPlugin from '@fullcalendar/interaction'
+import './Calendario.css'
 
-const initialValue = dayjs('2024-07-01');
-function CustomDay(props) {
-  const { markedDays, day, outsideCurrentMonth, ...other } = props;
-  const isSelected = !outsideCurrentMonth && markedDays.some(markedDay => markedDay.date === day.date());
-  const markType = isSelected ? markedDays.find(markedDay => markedDay.date === day.date()).type : null;
-  return (
-    <Badge
-      key={day.toString()}
-      overlap="circular"
-      badgeContent={isSelected ? (markType === 'azul' ? '🔵' : '🔴') : undefined}
-      classes={{ badge: isSelected ? (markType === 'azul' ? 'custom-badge-azul' : 'custom-badge-vermelho') : '' }}
-    >
-      <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
-    </Badge>
-  );
+let eventGuid = 0
+let todayStr = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD de hoje
+
+export const Eventos_Iniciais = [
+  {
+    id: CriarEventoId(),
+    title: 'All-day event',
+    
+  },
+  {
+    id: CriarEventoId(),
+    title: 'Timed event',
+    
+  }
+]
+
+export function CriarEventoId() {
+  return String(eventGuid++)
 }
- function CustomCalendar() {
-  const [markedDays, setMarkedDays] = useState([
-    { date: 1, type: 'azul' },
-    { date: 2, type: 'vermelho' },
-    { date: 10, type: 'vermelho' },
-    { date: 15, type: 'azul' }
-  ]);
-  const [selectedDays, setSelectedDays] = useState([]);
-  const handleDayClick = (day) => {
-    const date = day.date();
-    setSelectedDays(prev => {
-      if (prev.includes(date)) {
-        return prev.filter(d => d !== date);
-      } else {
-        return [...prev, date];
-      }
+
+
+export default function DemostracaoApp() {
+  const [semanasVisiveis, setSemanasVisiveis] = useState(true)
+  const [EventosAtuais, setEventosAtuais] = useState([])
+
+  function fimDeSemana() {
+    setSemanasVisiveis(!semanasVisiveis)
+  }
+
+  function handleDateSelect(selectInfo) {
+    let title = prompt('Insira um título para o seu evento:')
+    
+    if (!title) {
+      return; // Se o título for vazio, não cria o evento
+    }
+  
+    let horarioInicial = prompt('Insira a hora de início (HH:MM):', selectInfo.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
+    let horarioFinal = prompt('Insira a hora de término (HH:MM):', selectInfo.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
+  
+    // Validação básica do formato de tempo
+    if (!/^([01]\d|2[0-3]):([0-5]\d)$/.test(horarioInicial) || !/^([01]\d|2[0-3]):([0-5]\d)$/.test(horarioFinal)) {
+      alert('Formato de hora inválido. Por favor, use HH:MM no formato 24 horas.');
+      return;
+    }
+  
+    let startDate = new Date(selectInfo.start);
+    let endDate = new Date(selectInfo.end);
+  
+    // Ajustar o horário para as datas selecionadas
+    startDate.setHours(...horarioInicial.split(':'));
+    endDate.setHours(...horarioFinal.split(':'));
+  
+    let calendarApi = selectInfo.view.calendar;
+    calendarApi.unselect(); // Limpar a seleção
+  
+    calendarApi.addEvent({
+      id: CriarEventoId(),
+      title,
+      start: startDate.toISOString(),
+      end: endDate.toISOString(),
+      allDay: selectInfo.allDay
     });
-  };
-  const handleConfirm = () => {
-    if (selectedDays.length > 0) {
-      const newMarkedDays = [...markedDays];
-      selectedDays.forEach(date => {
-        const existingIndex = newMarkedDays.findIndex(markedDay => markedDay.date === date);
-        if (existingIndex !== -1) {
-          newMarkedDays.splice(existingIndex, 1);
-        } else {
-          newMarkedDays.push({ date, type: 'azul' });
-        }
-      });
-      setMarkedDays(newMarkedDays);
-      setSelectedDays([]);
-    } else {
-      alert("Por favor, selecione os dias para confirmar.");
-    }
-  };
-  const handleClear = () => {
-    if (window.confirm("Você realmente deseja cancelar todas as marcações?")) {
-      setMarkedDays([]);
-    }
-  };
+  }
+  
 
+
+  function handleEventClick(clickInfo) {
+    if (confirm(`Você tem certeza que quer remover esse evento? '${clickInfo.event.title}'`)) {
+      clickInfo.event.remove()
+    }
+  }
+
+  function handleEvents(events) {
+    setEventosAtuais(events)
+  }
 
   return (
-    <> 
-    <div className="sidebar-reuniao">
-    <span className="title-h1">
-      <h1>Reuniões Marcadas</h1>
-      <div className='hr'/>
-    </span>
-    <ul>
-      <li>
-        <div className='card1'>
-          <h2>Nome do do cara</h2>
-        </div>
-      </li>
-      <li>
-        <div className='card1'>
-          <h2>Nome do do cara</h2>
-        </div>
-      </li>
-      </ul>
-    </div>
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <div className="calendar-container">
-      <span className="title">
-        <h1>Calendário</h1>
-      </span>
-        <DateCalendar showDaysOutsideCurrentMonth fixedWeekNumber={3}
-          defaultValue={initialValue}
-          onChange={handleDayClick}
-          slots={{
-            day: CustomDay,
+    <div className='demo-app'>
+      <Sidebar
+        semanasVisiveis={semanasVisiveis}
+        fimDeSemana={fimDeSemana}
+        EventosAtuais={EventosAtuais}
+      />
+      <div className='demo-app-main'>
+        <FullCalendar
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          headerToolbar={{
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
           }}
-          slotProps={{
-            day: {
-              markedDays,
-            },
-          }}
+          initialView='dayGridMonth'
+          editable={true}
+          selectable={true}
+          selectMirror={true}
+          dayMaxEvents={true}
+          weekends={semanasVisiveis}
+          initialEvents={Eventos_Iniciais} 
+          select={handleDateSelect}
+          eventContent={renderEventContent} 
+          eventClick={handleEventClick}
+          eventsSet={handleEvents} 
         />
-        <div className="button-container">
-          <Button variant="contained" color="primary" onClick={handleConfirm} className="custom-button">
-            Confirmar Dias Disponíveis
-          </Button>
-          <Button variant="contained" color="secondary" onClick={handleClear} className="custom-button">
-            Cancelar Marcações
-          </Button>
-        </div>
       </div>
-    </LocalizationProvider>
-    
-    </>
-  );
-    
+    </div>
+  )
 }
 
- 
- export default CustomCalendar;
+function renderEventContent(eventInfo) {
+  return (
+    <>
+      <b>{eventInfo.timeText ? eventInfo.timeText : ''}</b>
+      <i>{eventInfo.event.title}</i>
+    </>
+  )
+}
+
+
+function Sidebar({ semanasVisiveis, fimDeSemana, EventosAtuais }) {
+       // daqui para baixo é a parte da sidebar tentei me esforçar ao máximo para fazer
+
+  return (
+    <div className='demo-app-sidebar'>
+      <div className='demo-app-sidebar-section'>
+        <label>
+          <input
+            type='checkbox' 
+            checked={semanasVisiveis}
+            onChange={fimDeSemana}
+          ></input> 
+           <strong>Mostrar Sábado e Domingo </strong> 
+        </label>
+      </div>
+      <div className='demo-app-sidebar-section'>
+        <h2>Reuniões Marcadas ({EventosAtuais.length})</h2>
+        <ul>
+          {EventosAtuais.map((event) => (
+            <SidebarEvent key={event.id} event={event} />
+          ))}
+        </ul>
+      </div>
+    </div>
+  )
+}
+
+function SidebarEvent({ event }) {
+  const horarioInicial = event.start ? new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) : '';
+  const horarioFinal = event.end ? new Date(event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) : '';
+  return (
+    <li key={event.id}>
+    <b>{formatDate(event.start, {year: 'numeric', month: 'short', day: 'numeric'})}</b>
+    <span>{horarioInicial && horarioFinal ? ` ${horarioInicial} - ${horarioFinal}` : ''} </span>
+    <i>{' ' + event.title}</i> 
+  </li>
+  )
+}
