@@ -1,45 +1,40 @@
-import React from 'react';
-import { Container, Box, TextField, Button, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { Container, Box, TextField, Button, Typography, Snackbar, Alert } from '@mui/material';
 import { styled } from '@mui/system';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 
-const StyledContainer = styled(Container)({
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  height: '100vh',
-  backgroundColor: '#ffffff',
-  position: 'relative',
-});
+const StyledContainer = styled(Container)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #ffffff;
+  position: relative;
+`;
 
-const Content = styled(Box)({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  padding: '20px',
-  backgroundColor: '#ffffff',
-  borderRadius: '8px',
-  boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-  width: '450px',
-  maxHeight: 'calc(100vh - 40px)',
-  overflowY: 'auto',
-  position: 'relative',
-  zIndex: 1,
-});
+const Content = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 450px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  position: relative;
+  z-index: 1;
+`;
 
-const StyledForm = styled('form')({
-  width: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  height: '100%',
-});
-
-const FormGroup = styled(Box)({
-  marginBottom: '15px',
-  width: '100%',
-});
+const StyledForm = styled('form')`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+`;
 
 const Input = styled(TextField)({
   width: '100%',
@@ -55,31 +50,6 @@ const Input = styled(TextField)({
   },
 });
 
-const SubmitButton = styled(Button)({
-  width: '120px',
-  height: '50px',
-  padding: '10px',
-  backgroundColor: '#004598',
-  color: 'white',
-  borderRadius: '15px',
-  fontSize: '16px',
-  transition: 'background-color 0.3s ease',
-  '&:hover': {
-    backgroundColor: '#0056b3',
-  },
-  marginBottom: '50px',
-});
-
-const SignUpButton = styled(Button)({
-  fontSize: '15px',
-  marginTop: '10px',
-  backgroundColor: 'transparent',
-  color: '#007bff',
-  border: 'none',
-  cursor: 'pointer',
-  marginBottom: '30px',
-});
-
 const LoginTitle = styled(Typography)`
   color: #002B6D;
   font-family: 'Roboto', sans-serif;
@@ -88,21 +58,38 @@ const LoginTitle = styled(Typography)`
   font-size: 60px;
 `;
 
-const BackgroundImage = styled('img')({
-  position: 'absolute',
-  top: 0,
-  left: '50%',
-  transform: 'translateX(-50%)',
-  width: '200px',
-  height: '200px',
-  zIndex: 1,
-});
+const BackgroundImage = styled('img')`
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 200px;
+  z-index: 1;
+`;
 
 function ContainerLogin() {
-  const navigate = useNavigate(); 
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSignUpClick = () => {
-    navigate('/cadastro'); // Para ir para a tela de cadastro
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const storedData = JSON.parse(localStorage.getItem('userData'));
+
+    if (storedData && storedData.email === email && storedData.senha === password) {
+      setErrorMessage('');
+      navigate('/home');
+    } else {
+      setErrorMessage('Credenciais inválidas');
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
   };
 
   return (
@@ -110,30 +97,51 @@ function ContainerLogin() {
       <BackgroundImage src="./src/assets/sesi-senai.png" alt="Background" />
       <StyledContainer>
         <Content>
-          <LoginTitle>Login</LoginTitle>
-          <StyledForm>
-            <FormGroup>
-              <Input
-                label="Digite seu email"
-                type="email"
-                variant="outlined"
-                required
-              />
-            </FormGroup>
-            <FormGroup>
-              <Input
-                label="Digite sua senha"
-                type="password"
-                variant="outlined"
-                required
-                inputProps={{ minLength: 6 }}
-              />
-            </FormGroup>
-            <SignUpButton onClick={handleSignUpClick}>Quero me cadastrar</SignUpButton>
-            <SubmitButton type="submit">Entrar</SubmitButton>
+          <LoginTitle variant="h1">Login</LoginTitle>
+          <StyledForm onSubmit={handleSubmit}>
+            <Input
+              label="Digite seu email"
+              type="email"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+              label="Digite sua senha"
+              type="password"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              required
+              inputProps={{ minLength: 6 }}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2, mb: 2, width: '120px', height: '50px', borderRadius: '15px' }}>
+              Entrar
+            </Button>
+            <Button
+              variant="text"
+              color="primary"
+              onClick={() => navigate('/cadastro')}
+              sx={{ mb: 2 }}>
+              Quero me cadastrar
+            </Button>
           </StyledForm>
         </Content>
       </StyledContainer>
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity="error" sx={{ width: '100%' }}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

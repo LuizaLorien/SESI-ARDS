@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Container, Box, TextField, Button, Typography } from '@mui/material';
+import { Container, Box, TextField, Button, Typography, Snackbar, Alert } from '@mui/material';
 import { styled } from '@mui/system';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 
 const StyledContainer = styled(Container)`
   display: flex;
@@ -89,22 +89,70 @@ const validateCPF = (cpf) => {
 
 function ContainerCadastro() {
   const [cpf, setCpf] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [cpfError, setCpfError] = useState('');
-  const navigate = useNavigate(); // inicializar a navegação do usuario
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const navigate = useNavigate();
+
+  const validateForm = () => {
+    let isValid = true;
+    setCpfError('');
+    setEmailError('');
+    setPasswordError('');
+
+    if (!validateCPF(cpf)) {
+      setCpfError('CPF inválido');
+      isValid = false;
+    }
+
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      setEmailError('Email inválido');
+      isValid = false;
+    }
+
+    if (!password || password.length < 6) {
+      setPasswordError('A senha deve ter pelo menos 6 caracteres');
+      isValid = false;
+    }
+
+    return isValid;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!validateCPF(cpf)) {
-      setCpfError('CPF inválido');
+    if (validateForm()) {
+  
+      localStorage.setItem('userData', JSON.stringify({
+        nome: e.target[0].value,
+        email,
+        senha: password,
+        cpf,
+      }));
+  
+      setSnackbarMessage('Cadastro realizado com sucesso!');
+      setSnackbarSeverity('success');
+      setOpenSnackbar(true);
+  
+      navigate('/login');
     } else {
-      setCpfError('');
+      setSnackbarMessage('Por favor, corrija os erros no formulário.');
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
     }
-    navigate('/login'); // apos cadastrar retornar o usuario para a tela de login e assim ele logar com os dados cadastrados
   };
+  
 
   const handleBackClick = () => {
-    navigate('/login'); // pra quando voltar para a tela de login
-    
+    navigate('/login');
+  };
+
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
   };
 
   return (
@@ -128,6 +176,10 @@ function ContainerCadastro() {
               fullWidth
               margin="normal"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              error={!!emailError}
+              helperText={emailError}
             />
             <Input
               label="Digite sua senha"
@@ -137,6 +189,10 @@ function ContainerCadastro() {
               margin="normal"
               required
               inputProps={{ minLength: 6 }}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              error={!!passwordError}
+              helperText={passwordError}
             />
             <Input
               label="Digite seu CPF"
@@ -155,15 +211,24 @@ function ContainerCadastro() {
               type="submit"
               variant="contained"
               color="primary"
-              sx={{ mt: 2, mb: 2, width: '120px', height: '50px', borderRadius: '15px' }}> Cadastrar </Button>
+              sx={{ mt: 2, mb: 2, width: '120px', height: '50px', borderRadius: '15px' }}>
+              Cadastrar
+            </Button>
             <Button
               variant="text"
               color="primary"
               onClick={handleBackClick}
-              sx={{ mb: 2 }}> Voltar para o Login </Button>
+              sx={{ mb: 2 }}>
+              Voltar para o Login
+            </Button>
           </StyledForm>
         </Content>
       </StyledContainer>
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 }
