@@ -14,6 +14,7 @@
     "react-dom": "^17.0.0 || ^18.0.0"
   },
   "dependencies": {
+    "@date-io/date-fns": "^3.0.0",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
     "@fullcalendar/core": "^6.1.15",
@@ -22,17 +23,21 @@
     "@fullcalendar/react": "^6.1.15",
     "@fullcalendar/timegrid": "^6.1.15",
     "@mui/icons-material": "^5.16.4",
+    "@mui/lab": "^5.0.0-alpha.173",
     "@mui/material": "^5.16.4",
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
     "@mui/x-data-grid": "^7.11.0",
     "@mui/x-date-pickers": "^7.11.0",
     "bootstrap": "^5.3.3",
     "dayjs": "^1.11.12",
+    "email-validator": "^2.0.4",
     "react": "^17.0.0 || ^18.0.0",
     "react-bootstrap": "^2.10.4",
     "react-dom": "^17.0.0 || ^18.0.0",
     "react-input-mask": "^2.0.4",
+    "react-password-strength-bar": "^0.4.1",
     "react-router-dom": "^6.25.1",
+    "react-text-mask": "^5.5.0",
     "styled-components": "^6.1.12"
   },
   "devDependencies": {

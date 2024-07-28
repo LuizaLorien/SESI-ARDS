@@ -9,7 +9,7 @@ const StyledContainer = styled(Container)`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  height: 100vh;
   background-color: #ffffff;
   position: relative;
   
@@ -25,7 +25,7 @@ const Content = styled(Box)`
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 450px;
   max-height: calc(100vh - 0px);
-  overflow-y: auto;
+  overflow-y: hiden;
   position: relative;
   z-index: 1;
   margin-top: 120px
