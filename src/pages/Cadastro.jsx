@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Container, Box, TextField, Button, Typography, Snackbar, Alert } from '@mui/material';
+import { Container, Box, TextField, Button, Typography, Snackbar, Alert, IconButton, InputAdornment, FormControlLabel, Checkbox } from '@mui/material';
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import InputMask from 'react-input-mask';
 
 const StyledContainer = styled(Container)`
   display: flex;
@@ -71,7 +73,7 @@ const BackgroundImage = styled('img')`
 const validateCPF = (cpf) => {
   cpf = cpf.replace(/[^\d]/g, '');
   if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
-  
+
   let sum = 0;
   for (let i = 1; i <= 9; i++) sum += parseInt(cpf.substring(i - 1, i)) * (11 - i);
   let remainder = (sum * 10) % 11;
@@ -83,17 +85,26 @@ const validateCPF = (cpf) => {
   remainder = (sum * 10) % 11;
   if (remainder === 10 || remainder === 11) remainder = 0;
   if (remainder !== parseInt(cpf.substring(10, 11))) return false;
-  
+
   return true;
 };
 
-function ContainerCadastro() {
+const validatePasswordComplexity = (password) => {
+  const complexityPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
+  return complexityPattern.test(password);
+};
+
+const ContainerCadastro = () => {
   const [cpf, setCpf] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [cpfError, setCpfError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -104,9 +115,16 @@ function ContainerCadastro() {
     setCpfError('');
     setEmailError('');
     setPasswordError('');
+    setConfirmPasswordError('');
 
     if (!validateCPF(cpf)) {
       setCpfError('CPF inválido');
+      isValid = false;
+    }
+
+    const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+    if (storedUsers.some(user => user.email === email)) {
+      setEmailError('Email já cadastrado');
       isValid = false;
     }
 
@@ -118,6 +136,21 @@ function ContainerCadastro() {
     if (!password || password.length < 6) {
       setPasswordError('A senha deve ter pelo menos 6 caracteres');
       isValid = false;
+    } else if (!validatePasswordComplexity(password)) {
+      setPasswordError('A senha deve conter letras maiúsculas, minúsculas, números e caracteres especiais');
+      isValid = false;
+    }
+
+    if (password !== confirmPassword) {
+      setConfirmPasswordError('As senhas não coincidem');
+      isValid = false;
+    }
+
+    if (!termsAccepted) {
+      setSnackbarMessage('Você deve aceitar os termos de serviço');
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
+      isValid = false;
     }
 
     return isValid;
@@ -126,18 +159,21 @@ function ContainerCadastro() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-  
-      localStorage.setItem('userData', JSON.stringify({
+      const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+      const newUser = {
         nome: e.target[0].value,
         email,
         senha: password,
         cpf,
-      }));
-  
+        isAdmin: false,  // aqui estou dizendo que o usuario é um usario comum, sem ser cadastrado pelo ADM
+      };
+      storedUsers.push(newUser);
+      localStorage.setItem('users', JSON.stringify(storedUsers));
+
       setSnackbarMessage('Cadastro realizado com sucesso!');
       setSnackbarSeverity('success');
       setOpenSnackbar(true);
-  
+
       navigate('/login');
     } else {
       setSnackbarMessage('Por favor, corrija os erros no formulário.');
@@ -145,7 +181,6 @@ function ContainerCadastro() {
       setOpenSnackbar(true);
     }
   };
-  
 
   const handleBackClick = () => {
     navigate('/login');
@@ -153,6 +188,14 @@ function ContainerCadastro() {
 
   const handleSnackbarClose = () => {
     setOpenSnackbar(false);
+  };
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
   };
 
   return (
@@ -183,7 +226,7 @@ function ContainerCadastro() {
             />
             <Input
               label="Digite sua senha"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               variant="outlined"
               fullWidth
               margin="normal"
@@ -193,33 +236,76 @@ function ContainerCadastro() {
               onChange={(e) => setPassword(e.target.value)}
               error={!!passwordError}
               helperText={passwordError}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             <Input
-              label="Digite seu CPF"
-              type="text"
+              label="Confirme sua senha"
+              type={showPassword ? 'text' : 'password'}
               variant="outlined"
               fullWidth
               margin="normal"
               required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              error={!!confirmPasswordError}
+              helperText={confirmPasswordError}
+            />
+            <InputMask
+              mask="999.999.999-99"
               value={cpf}
               onChange={(e) => setCpf(e.target.value)}
-              error={!!cpfError}
-              helperText={cpfError}
-              inputProps={{ maxLength: 14 }}
+              onBlur={(e) => {
+                if (!validateCPF(e.target.value)) {
+                  setCpfError('CPF inválido');
+                } else {
+                  setCpfError('');
+                }
+              }}
+            >
+              {() => (
+                <Input
+                  label="CPF"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  required
+                  error={!!cpfError}
+                  helperText={cpfError}
+                />
+              )}
+            </InputMask>
+            <FormControlLabel
+              control={<Checkbox checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} />}
+              label="Eu aceito os termos de serviço"
             />
             <Button
               type="submit"
               variant="contained"
               color="primary"
-              sx={{ mt: 2, mb: 2, width: '120px', height: '50px', borderRadius: '15px' }}>
+              sx={{ mt: 2, mb: 2, width: '120px', height: '50px', borderRadius: '15px' }}
+            >
               Cadastrar
             </Button>
             <Button
               variant="text"
               color="primary"
               onClick={handleBackClick}
-              sx={{ mb: 2 }}>
-              Voltar para o Login
+              sx={{ mb: 2 }}
+            >
+              Voltar para Login
             </Button>
           </StyledForm>
         </Content>
