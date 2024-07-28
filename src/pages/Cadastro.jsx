@@ -9,24 +9,26 @@ const StyledContainer = styled(Container)`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100%;
   background-color: #ffffff;
   position: relative;
+  
 `;
 
 const Content = styled(Box)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 10px;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 450px;
-  max-height: calc(100vh - 40px);
+  max-height: calc(100vh - 0px);
   overflow-y: auto;
   position: relative;
   z-index: 1;
+  margin-top: 120px
 `;
 
 const StyledForm = styled('form')`
@@ -57,17 +59,17 @@ const CadastroTitle = styled(Typography)`
   font-family: 'Roboto', sans-serif;
   margin-top: 20px;
   margin-bottom: 20px;
-  font-size: 60px;
+  font-size: 50px;
 `;
 
 const BackgroundImage = styled('img')`
   position: absolute;
-  top: 0;
+  top: -30px;
   left: 50%;
   transform: translateX(-50%);
   width: 200px;
-  height: 200px;
-  z-index: 1;
+  height: 150px;
+  z-index: 3;
 `;
 
 const validateCPF = (cpf) => {
