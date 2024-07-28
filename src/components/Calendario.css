@@ -52,3 +52,12 @@ b {
   max-width: 1100px;
   margin: 0 auto;
 }
+
+.fc-event {
+  border: 1px solid #3788d8; 
+  background-color: #63a4f7; 
+  color: white; 
+  border-radius: 3px; 
+  padding: 2px 4px; 
+  width: 148px;
+}

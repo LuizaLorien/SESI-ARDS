@@ -7,25 +7,26 @@ import interactionPlugin from '@fullcalendar/interaction'
 import './Calendario.css'
 
 let eventGuid = 0
-let todayStr = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD de hoje
 
 export const Eventos_Iniciais = [
   {
     id: CriarEventoId(),
     title: 'All-day event',
-    
+    start: '2024-07-08',
+    allDay: true
   },
   {
     id: CriarEventoId(),
     title: 'Timed event',
-    
+    start: '2024-07-08T12:00:00',
+    end: '2024-07-08T13:00:00',
+    allDay: false
   }
 ]
 
 export function CriarEventoId() {
   return String(eventGuid++)
 }
-
 
 export default function DemostracaoApp() {
   const [semanasVisiveis, setSemanasVisiveis] = useState(true)
@@ -37,40 +38,39 @@ export default function DemostracaoApp() {
 
   function handleDateSelect(selectInfo) {
     let title = prompt('Insira um título para o seu evento:')
-    
+
     if (!title) {
-      return; // Se o título for vazio, não cria o evento
+      return
     }
-  
-    let horarioInicial = prompt('Insira a hora de início (HH:MM):', selectInfo.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
-    let horarioFinal = prompt('Insira a hora de término (HH:MM):', selectInfo.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
-  
-    // Validação básica do formato de tempo
+
+    let horarioInicial = prompt('Insira a hora de início (HH:MM):', '10:00')
+    let horarioFinal = prompt('Insira a hora de término (HH:MM):', '12:00')
+
     if (!/^([01]\d|2[0-3]):([0-5]\d)$/.test(horarioInicial) || !/^([01]\d|2[0-3]):([0-5]\d)$/.test(horarioFinal)) {
-      alert('Formato de hora inválido. Por favor, use HH:MM no formato 24 horas.');
-      return;
+      alert('Formato de hora inválido. Por favor, use HH:MM no formato 24 horas.')
+      return
     }
-  
-    let startDate = new Date(selectInfo.start);
-    let endDate = new Date(selectInfo.end);
-  
-    // Ajustar o horário para as datas selecionadas
-    startDate.setHours(...horarioInicial.split(':'));
-    endDate.setHours(...horarioFinal.split(':'));
-  
-    let calendarApi = selectInfo.view.calendar;
-    calendarApi.unselect(); // Limpar a seleção
-  
+
+    let [startHour, startMinute] = horarioInicial.split(':').map(Number)
+    let [endHour, endMinute] = horarioFinal.split(':').map(Number)
+
+    let startDate = new Date(selectInfo.start)
+    let endDate = new Date(selectInfo.end)
+
+    startDate.setHours(startHour, startMinute)
+    endDate.setHours(endHour, endMinute)
+
+    let calendarApi = selectInfo.view.calendar
+    calendarApi.unselect()
+
     calendarApi.addEvent({
       id: CriarEventoId(),
       title,
-      start: startDate.toISOString(),
-      end: endDate.toISOString(),
-      allDay: selectInfo.allDay
-    });
+      start: startDate,
+      end: endDate,
+      allDay: false
+    })
   }
-  
-
 
   function handleEventClick(clickInfo) {
     if (confirm(`Você tem certeza que quer remover esse evento? '${clickInfo.event.title}'`)) {
@@ -103,11 +103,11 @@ export default function DemostracaoApp() {
           selectMirror={true}
           dayMaxEvents={true}
           weekends={semanasVisiveis}
-          initialEvents={Eventos_Iniciais} 
+          initialEvents={Eventos_Iniciais}
           select={handleDateSelect}
-          eventContent={renderEventContent} 
+          eventContent={renderEventContent}
           eventClick={handleEventClick}
-          eventsSet={handleEvents} 
+          eventsSet={handleEvents}
         />
       </div>
     </div>
@@ -123,20 +123,17 @@ function renderEventContent(eventInfo) {
   )
 }
 
-
 function Sidebar({ semanasVisiveis, fimDeSemana, EventosAtuais }) {
-       // daqui para baixo é a parte da sidebar tentei me esforçar ao máximo para fazer
-
   return (
     <div className='demo-app-sidebar'>
       <div className='demo-app-sidebar-section'>
         <label>
           <input
-            type='checkbox' 
+            type='checkbox'
             checked={semanasVisiveis}
             onChange={fimDeSemana}
-          ></input> 
-           <strong>Mostrar Sábado e Domingo </strong> 
+          ></input>
+          <strong>Mostrar Sábado e Domingo</strong>
         </label>
       </div>
       <div className='demo-app-sidebar-section'>
@@ -152,13 +149,14 @@ function Sidebar({ semanasVisiveis, fimDeSemana, EventosAtuais }) {
 }
 
 function SidebarEvent({ event }) {
-  const horarioInicial = event.start ? new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) : '';
-  const horarioFinal = event.end ? new Date(event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) : '';
+  const horarioInicial = event.start ? new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) : ''
+  const horarioFinal = event.end ? new Date(event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) : ''
+
   return (
     <li key={event.id}>
-    <b>{formatDate(event.start, {year: 'numeric', month: 'short', day: 'numeric'})}</b>
-    <span>{horarioInicial && horarioFinal ? ` ${horarioInicial} - ${horarioFinal}` : ''} </span>
-    <i>{' ' + event.title}</i> 
-  </li>
+      <b>{formatDate(event.start, { year: 'numeric', month: 'short', day: 'numeric' })}</b>
+      <span>{horarioInicial && horarioFinal ? ` ${horarioInicial} - ${horarioFinal}` : ''} </span>
+      <i>{' ' + event.title}</i>
+    </li>
   )
 }
