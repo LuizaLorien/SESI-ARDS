@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Container, Box, TextField, Button, Typography, Snackbar, Alert } from '@mui/material';
+import { Container, Box, TextField, Button, Typography, Snackbar, Alert, IconButton, InputAdornment, CircularProgress } from '@mui/material';
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const StyledContainer = styled(Container)`
   display: flex;
@@ -71,25 +73,68 @@ const BackgroundImage = styled('img')`
 function ContainerLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const validateEmail = (email) => {
+    return /\S+@\S+\.\S+/.test(email);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const storedData = JSON.parse(localStorage.getItem('userData'));
+    setLoading(true);
 
-    if (storedData && storedData.email === email && storedData.senha === password) {
+    if (!validateEmail(email)) {
+      setErrorMessage('Email inválido');
+      setOpenSnackbar(true);
+      setLoading(false);
+      return;
+    }
+
+    // verificação do ADM MASTER
+    if (email === 'admin@gmail.com' && password === 'admin000') {
+      localStorage.setItem('user', JSON.stringify({ email, name: 'Admin', isAdmin: true }));
+      setLoading(false);
+      navigate('/controlerAdm');
+      return;
+    }
+
+    const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+    console.log('Stored Users:', storedUsers); // teste para ver se os usuarios tao puxando (talvez eu esquça de apagar)
+
+    const user = storedUsers.find((user) => user.email === email && user.senha === password);
+
+    if (user) {
       setErrorMessage('');
-      navigate('/home');
+      localStorage.setItem('user', JSON.stringify(user));
+      setLoading(false);
+      if (user.isAdmin) {
+        navigate('/controlerAdm'); 
+      } else {
+        navigate('/home');
+      }
     } else {
       setErrorMessage('Credenciais inválidas');
       setOpenSnackbar(true);
+      setLoading(false);
+      setEmail('');
+      setPassword('');
     }
   };
 
   const handleSnackbarClose = () => {
     setOpenSnackbar(false);
+  };
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (e) => {
+    e.preventDefault();
   };
 
   return (
@@ -111,7 +156,7 @@ function ContainerLogin() {
             />
             <Input
               label="Digite sua senha"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               variant="outlined"
               fullWidth
               margin="normal"
@@ -119,13 +164,28 @@ function ContainerLogin() {
               inputProps={{ minLength: 6 }}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             <Button
               type="submit"
               variant="contained"
               color="primary"
-              sx={{ mt: 2, mb: 2, width: '120px', height: '50px', borderRadius: '15px' }}>
-              Entrar
+              sx={{ mt: 2, mb: 2, width: '120px', height: '50px', borderRadius: '15px' }}
+              disabled={loading}
+            >
+              {loading ? <CircularProgress size={24} /> : 'Entrar'}
             </Button>
             <Button
               variant="text"
