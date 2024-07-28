@@ -8,6 +8,19 @@ import './Calendario.css'
 
 let eventGuid = 0
 
+export const Eventos_Iniciais = [
+  {
+    id: CriarEventoId(),
+    title: 'Reunião de Planejamento',
+    start: '2024-07-31T14:00:00',
+  },
+  {
+    id: CriarEventoId(),
+    title: 'Reunião de Equipe',
+    start: '2024-07-31T14:00:00',
+  }
+]
+
 export function CriarEventoId() {
   return String(eventGuid++)
 }
@@ -87,6 +100,7 @@ export default function DemostracaoApp() {
           selectMirror={true}
           dayMaxEvents={true}
           weekends={semanasVisiveis}
+          initialEvents={Eventos_Iniciais}
           select={handleDateSelect}
           eventContent={renderEventContent}
           eventClick={handleEventClick}
@@ -106,13 +120,10 @@ function renderEventContent(eventInfo) {
   )
 }
 
-function Sidebar({EventosAtuais }) {
+function Sidebar({ EventosAtuais }) {
   return (
     <div className='demo-app-sidebar'>
       <div className='demo-app-sidebar-section'>
-        <label>
-         
-        </label>
       </div>
       <div className='demo-app-sidebar-section'>
         <h2>Reuniões Marcadas ({EventosAtuais.length})</h2>

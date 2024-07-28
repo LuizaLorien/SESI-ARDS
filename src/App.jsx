@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import AdminCalendar from './components/Calendario';
 import ProfilePage from './pages/Perfil';
 import  ControleAdmin  from './pages/ControleAdmin';
+import ClientPage from './components/ClienteCalendario';
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/calendario" element={<AdminCalendar />} />
+        <Route path="/cliente-calendario" element={<ClientPage />} />
         <Route path='/perfil' element={<ProfilePage />} />
         <Route path='/controlerAdm' element={<ControleAdmin/>}/>
       </Routes>
