@@ -8,22 +8,6 @@ import './Calendario.css'
 
 let eventGuid = 0
 
-export const Eventos_Iniciais = [
-  {
-    id: CriarEventoId(),
-    title: 'All-day event',
-    start: '2024-07-08',
-    allDay: true
-  },
-  {
-    id: CriarEventoId(),
-    title: 'Timed event',
-    start: '2024-07-08T12:00:00',
-    end: '2024-07-08T13:00:00',
-    allDay: false
-  }
-]
-
 export function CriarEventoId() {
   return String(eventGuid++)
 }
@@ -103,7 +87,6 @@ export default function DemostracaoApp() {
           selectMirror={true}
           dayMaxEvents={true}
           weekends={semanasVisiveis}
-          initialEvents={Eventos_Iniciais}
           select={handleDateSelect}
           eventContent={renderEventContent}
           eventClick={handleEventClick}
@@ -123,17 +106,12 @@ function renderEventContent(eventInfo) {
   )
 }
 
-function Sidebar({ semanasVisiveis, fimDeSemana, EventosAtuais }) {
+function Sidebar({EventosAtuais }) {
   return (
     <div className='demo-app-sidebar'>
       <div className='demo-app-sidebar-section'>
         <label>
-          <input
-            type='checkbox'
-            checked={semanasVisiveis}
-            onChange={fimDeSemana}
-          ></input>
-          <strong>Mostrar Sábado e Domingo</strong>
+         
         </label>
       </div>
       <div className='demo-app-sidebar-section'>

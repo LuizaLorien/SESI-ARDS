@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Cadastro from './pages/Cadastro';
 import Login from './pages/Login';
-import DemoApp from './components/Calendario';
+import AdminCalendar from './components/Calendario';
 import ProfilePage from './pages/Perfil';
 
 const App = () => {
@@ -12,7 +12,7 @@ const App = () => {
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/cadastro" element={<Cadastro />} />
-        <Route path="/calendario" element={<DemoApp />} />
+        <Route path="/calendario" element={<AdminCalendar />} />
         <Route path='/perfil' element={<ProfilePage />} />
       </Routes>
     </Router>
