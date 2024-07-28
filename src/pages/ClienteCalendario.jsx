@@ -3,18 +3,18 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import './ClientePage.css'; // Importar o arquivo de estilos
+import '../styles/ClienteCalendario.css'; 
 
 
 export default function ClientPage() {
   const [eventosAtuais, setEventosAtuais] = useState([]);
 
   useEffect(() => {
-    // Simulação de carregamento de eventos de uma API ou outro serviço
+
     const carregarEventos = async () => {
-      // Aqui você substituiria por uma chamada real à API
+
       const eventos = [
-        // Exemplo de dados
+ 
         {
           id: '1',
           title: 'Reunião de Planejamento',
@@ -29,7 +29,7 @@ export default function ClientPage() {
           end: '2024-07-31T15:00:00',
           extendedProps: { isAdmin: true }
         },
-        // Outros eventos
+    
       ];
 
       setEventosAtuais(eventos.filter(evento => evento.extendedProps?.isAdmin));
@@ -51,8 +51,8 @@ export default function ClientPage() {
           }}
           initialView='dayGridMonth'
           events={eventosAtuais}
-          editable={false} // Clientes não devem poder editar eventos
-          selectable={false} // Clientes não devem poder selecionar datas
+          editable={false} 
+          selectable={false} 
         />
       </div>
     </div>
