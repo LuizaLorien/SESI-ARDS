@@ -4,6 +4,9 @@ body {
     
 }
 
+#root{
+  background-color: #fff;
+}
 .bodyLogin{
   background-color: #ffffff;
 }
