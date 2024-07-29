@@ -195,6 +195,7 @@ const ProfilePage = () => {
   const handleLogoutClick = () => setLogoutDialogOpen(true);
 
   const handleLogoutConfirm = () => {
+    navigate('/login')
     localStorage.removeItem('authToken'); // Exemplo de remover os dados rapaziada
     setLogoutDialogOpen(false);
   };
@@ -204,7 +205,7 @@ const ProfilePage = () => {
   const handleSnackbarClose = () => setOpenSnackbar(false);
 
   return (
-    <section>
+    <body>
       <StyledContainer>
         <StyledContent>
           <Grid container spacing={1.5} justifyContent="center">
@@ -443,7 +444,7 @@ const ProfilePage = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </section>
+    </body>
   );
 };
 

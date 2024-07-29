@@ -39,6 +39,7 @@ export default function ClientPage() {
   }, []);
 
   return (
+    <body className='bodyCalendar'>
     <div className='client-page'>
       <Sidebar eventos={eventosAtuais} />
       <div className='client-page-main'>
@@ -56,6 +57,7 @@ export default function ClientPage() {
         />
       </div>
     </div>
+    </body>
   );
 }
 

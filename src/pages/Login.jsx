@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
+
 const StyledContainer = styled(Container)`
   display: flex;
   justify-content: center;
@@ -105,8 +106,6 @@ function ContainerLogin() {
     }
 
     const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
-    console.log('Stored Users:', storedUsers); // teste para ver se os usuarios tao puxando (talvez eu esquça de apagar)
-
     const user = storedUsers.find((user) => user.email === email && user.senha === password);
 
     if (user) {
@@ -141,6 +140,7 @@ function ContainerLogin() {
 
   return (
     <>
+    <body className='bodyLogin'>
       <BackgroundImage src="./src/assets/sesi-senai.png" alt="Background" />
       <StyledContainer>
         <Content>
@@ -204,6 +204,7 @@ function ContainerLogin() {
           {errorMessage}
         </Alert>
       </Snackbar>
+      </body>
     </>
   );
 }

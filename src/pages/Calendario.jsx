@@ -87,6 +87,7 @@ export default function DemostracaoApp() {
   }
 
   return (
+    <body className='bodyCalendar'>
     <div className='demo-app'>
       <Sidebar
         semanasVisiveis={semanasVisiveis}
@@ -123,6 +124,7 @@ export default function DemostracaoApp() {
         />
       )}
     </div>
+    </body>
   );
 }
 

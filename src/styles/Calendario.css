@@ -7,6 +7,10 @@ body > div {
   height: 100%;
 }
 
+.bodyCalendar{
+  background-color: #ffffff;
+}
+
 h2 {
   margin: 0;
   font-size: 16px;
