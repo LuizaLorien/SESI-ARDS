@@ -5,6 +5,10 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useNavigate } from 'react-router-dom'; 
 import MuiAlert from '@mui/material/Alert';
+import MaskedInput from 'react-text-mask';
+import { DatePicker } from '@mui/lab';
+import * as EmailValidator from 'email-validator';
+import PasswordStrengthBar from 'react-password-strength-bar';
 import "../styles/pages.css";
 import zIndex from '@mui/material/styles/zIndex';
 
@@ -12,8 +16,10 @@ const StyledContainer = styled(Container)({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  height: '100vh',
+  height: '100%',
   width: '100vw',
+  paddingTop: '20px',
+  paddingBottom: '60px' 
 });
 
 const StyledContent = styled(Box)({
@@ -21,8 +27,9 @@ const StyledContent = styled(Box)({
   alignItems: 'center',
   borderRadius: '15px',
   boxShadow: '0 0 10px rgba(255, 255, 255, 0.1)',
-  height: '100%',
-  width: '100%',
+  height: '100%', 
+  width: '100%',  
+  
 });
 
 const StyledPaper = styled(Paper)({
@@ -34,7 +41,7 @@ const StyledPaper = styled(Paper)({
 
 const StyledAvatarBox = styled(Box)({
   display: 'flex',
-  marginTop: '120px',
+  marginTop: '30px',
   flexDirection: 'column',
   alignItems: 'center',
   marginBottom: '10px'
@@ -43,6 +50,7 @@ const StyledAvatarBox = styled(Box)({
 const StyledButton = styled(Button)({
   marginBottom: '10px',
   marginTop: '10px',
+  
 });
 
 const ProfilePage = () => {
@@ -52,9 +60,10 @@ const ProfilePage = () => {
     name: 'Fulano de Tal',
     email: 'fulano@example.com',
     password: 'fulano123',
-    phone: '(00) 1234-5678',
+    confirmPassword: 'fulano123',
+    phone: '(00) 1234-56789',
     birthdate: '01/01/1990',
-    cpf: '123.456.789-00',
+    cpf: '12345678900',
     registrationNumber: '123456789',
   });
   const [initialUserData, setInitialUserData] = useState(userData);
@@ -63,6 +72,13 @@ const ProfilePage = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [nameError, setNameError] = useState('');
+  const [cpfError, setCpfError] = useState('');
+  const [registrationNumberError, setRegistrationNumberError] = useState('');
   const navigate = useNavigate(); 
 
   const handleEditClick = () => setEditing(true);
@@ -111,15 +127,70 @@ const ProfilePage = () => {
   };
 
   const validateForm = () => {
-    const { name, email, phone, birthdate, cpf, registrationNumber } = userData;
-    if (!name || !email || !phone || !birthdate || !cpf || !registrationNumber) {
-      alert('Por favor, preencha todos os campos.');
-      return false;
+    let isValid = true;
+
+    if (!EmailValidator.validate(userData.email)) {
+      setEmailError('Email inválido');
+      isValid = false;
+    } else {
+      setEmailError('');
     }
-    return true;
+
+    if (userData.password.length < 8) {
+      setPasswordError('A senha deve ter pelo menos 8 caracteres');
+      isValid = false;
+    } else {
+      setPasswordError('');
+    }
+
+    if (userData.password !== userData.confirmPassword) {
+      setConfirmPasswordError('As senhas não correspondem');
+      isValid = false;
+    } else {
+      setConfirmPasswordError('');
+    }
+
+    if (!/^\(\d{2}\) \d{4,5}-\d{4}$/.test(userData.phone)) {
+      setPhoneError('Número de telefone inválido. Deve ter 9 dígitos.');
+      isValid = false;
+    } else {
+      setPhoneError('');
+    }
+
+    if (userData.name.length < 2) {
+      setNameError('O nome deve ter pelo menos 2 caracteres');
+      isValid = false;
+    } else {
+      setNameError('');
+    }
+
+    if (!/^\d{11}$/.test(userData.cpf)) {
+      setCpfError('CPF inválido. Deve ter exatamente 11 dígitos.');
+      isValid = false;
+    } else {
+      setCpfError('');
+    }
+
+    if (!/^\d{9}$/.test(userData.registrationNumber)) {
+      setRegistrationNumberError('Número de matrícula inválido. Deve ter exatamente 9 dígitos.');
+      isValid = false;
+    } else {
+      setRegistrationNumberError('');
+    }
+
+    const { name, phone, birthdate, cpf, registrationNumber } = userData;
+    if (!name || !phone || !birthdate || !cpf || !registrationNumber) {
+      setSnackbarMessage('Por favor, preencha todos os campos.');
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
+      isValid = false;
+    }
+
+    return isValid;
   };
 
   const navigateToHome = () => navigate('/home'); 
+  const navigateToCalendar = () => navigate('/cliente-calendario'); 
 
   const handleLogoutClick = () => setLogoutDialogOpen(true);
 
@@ -136,14 +207,14 @@ const ProfilePage = () => {
     <section>
       <StyledContainer>
         <StyledContent>
-          <Grid container spacing={1} justifyContent="center">
+          <Grid container spacing={1.5} justifyContent="center">
             {/* Coluna da esquerda */}
             <Grid item xs={12} md={3}>
               <StyledPaper>
                 <Box display="flex" flexDirection="column">
                   <StyledButton fullWidth variant="text" color="inherit" onClick={navigateToHome}>HOME</StyledButton>
                   <Divider />
-                  <StyledButton fullWidth variant="text" color="inherit">AGENDAMENTOS</StyledButton>
+                  <StyledButton fullWidth variant="text" color="inherit" onClick={navigateToCalendar}>AGENDAMENTOS</StyledButton>
                   <Divider />
                   <StyledButton fullWidth variant="text" color="inherit" onClick={handleLogoutClick}>SAIR</StyledButton>
                 </Box>
@@ -172,6 +243,9 @@ const ProfilePage = () => {
                           MUDAR FOTO
                         </Button>
                       </label>
+                      <Button variant="outlined" style={{ marginTop: '10px', width:'150px' }} color="primary"  onClick={() => setProfileImage('/path/to/default-profile-pic.jpg')}>
+                        RESETAR FOTO
+                      </Button>
                     </StyledAvatarBox>
                   </Grid>
                   <Grid item xs={12} md={8}>
@@ -184,15 +258,20 @@ const ProfilePage = () => {
                       value={userData.name}
                       onChange={handleChange}
                       disabled={!editing}
+                      error={!!nameError}
+                      helperText={nameError}
                     />
                     <TextField
                       fullWidth
                       margin="normal"
                       label="Email"
                       name="email"
+                      type="email"
                       value={userData.email}
                       onChange={handleChange}
                       disabled={!editing}
+                      error={!!emailError}
+                      helperText={emailError}
                     />
                     <TextField
                       fullWidth
@@ -203,6 +282,8 @@ const ProfilePage = () => {
                       value={userData.password}
                       onChange={handleChange}
                       disabled={!editing}
+                      error={!!passwordError}
+                      helperText={passwordError}
                       InputProps={{
                         endAdornment: (
                           <InputAdornment position="end">
@@ -212,6 +293,19 @@ const ProfilePage = () => {
                           </InputAdornment>
                         ),
                       }}
+                    />
+                    <PasswordStrengthBar password={userData.password} />
+                    <TextField
+                      fullWidth
+                      margin="normal"
+                      label="Confirmar Senha"
+                      name="confirmPassword"
+                      type={showPassword ? 'text' : 'password'}
+                      value={userData.confirmPassword}
+                      onChange={handleChange}
+                      disabled={!editing}
+                      error={!!confirmPasswordError}
+                      helperText={confirmPasswordError}
                     />
                     {/* Seção de dados adicionais */}
                     <Grid container spacing={2} style={{ marginTop: '20px' }}>
@@ -224,17 +318,44 @@ const ProfilePage = () => {
                           value={userData.phone}
                           onChange={handleChange}
                           disabled={!editing}
+                          error={!!phoneError}
+                          helperText={phoneError}
+                          InputProps={{
+                            inputComponent: MaskedInput,
+                            inputProps: {
+                              mask: [
+                                '(',
+                                /[1-9]/,
+                                /\d/,
+                                ')',
+                                ' ',
+                                /\d/,
+                                /\d/,
+                                /\d/,
+                                /\d/,
+                                '-',
+                                /\d/,
+                                /\d/,
+                                /\d/,
+                                /\d/,
+                              ],
+                            },
+                          }}
                         />
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <TextField
-                          fullWidth
-                          margin="normal"
+                        <DatePicker
                           label="Data de Nascimento"
-                          name="birthdate"
                           value={userData.birthdate}
-                          onChange={handleChange}
-                          disabled={!editing}
+                          onChange={(date) => setUserData({ ...userData, birthdate: date })}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              fullWidth
+                              margin="normal"
+                              disabled={!editing}
+                            />
+                          )}
                         />
                       </Grid>
                       <Grid item xs={12} sm={6}>
@@ -246,6 +367,29 @@ const ProfilePage = () => {
                           value={userData.cpf}
                           onChange={handleChange}
                           disabled={!editing}
+                          error={!!cpfError}
+                          helperText={cpfError}
+                          InputProps={{
+                            inputComponent: MaskedInput,
+                            inputProps: {
+                              mask: [
+                                /[0-9]/,
+                                /\d/,
+                                /\d/,
+                                '.',
+                                /\d/,
+                                /\d/,
+                                /\d/,
+                                '.',
+                                /\d/,
+                                /\d/,
+                                /\d/,
+                                '-',
+                                /\d/,
+                                /\d/,
+                              ],
+                            },
+                          }}
                         />
                       </Grid>
                       <Grid item xs={12} sm={6}>
@@ -257,6 +401,8 @@ const ProfilePage = () => {
                           value={userData.registrationNumber}
                           onChange={handleChange}
                           disabled={!editing}
+                          error={!!registrationNumberError}
+                          helperText={registrationNumberError}
                         />
                       </Grid>
                     </Grid>

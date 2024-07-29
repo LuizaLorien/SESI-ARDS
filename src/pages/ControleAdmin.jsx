@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/system';
-import { Box, Typography, Button, Switch, Modal, TextField, Snackbar, Alert, IconButton } from '@mui/material';
+import { Box, Typography, Button, Switch, Modal, TextField, Snackbar, Alert, IconButton, InputAdornment, IconButton as MUIIconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const ControleAdminContainer = styled(Box)({
   backgroundColor: '#7da0ca',
@@ -75,14 +77,20 @@ const validateName = (name) => {
   return re.test(name);
 };
 
+const validatePassword = (password) => {
+  const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+  return re.test(password);
+};
+
 const AddUserModal = ({ open, onClose, onSave }) => {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSave = () => {
-    if (!validateName(userName) || !validateEmail(userEmail) || userPassword.length < 6) {
+    if (!validateName(userName) || !validateEmail(userEmail) || !validatePassword(userPassword)) {
       onSave(null);
     } else {
       onSave({ name: userName, email: userEmail, senha: userPassword, isAdmin });
@@ -102,9 +110,8 @@ const AddUserModal = ({ open, onClose, onSave }) => {
         alignItems="center"
         justifyContent="center"
         position="absolute"
-        top="50%"
-        left="50%"
-        transform="translate(-50%, -50%)"
+        top="10%"
+        left="30%"
         bgcolor="white"
         padding="20px"
         borderRadius="10px"
@@ -132,13 +139,22 @@ const AddUserModal = ({ open, onClose, onSave }) => {
         />
         <TextField
           label="Senha"
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           value={userPassword}
           onChange={(e) => setUserPassword(e.target.value)}
           fullWidth
           margin="normal"
-          error={userPassword.length > 0 && userPassword.length < 6}
-          helperText={userPassword.length > 0 && userPassword.length < 6 ? 'Senha deve ter pelo menos 6 caracteres.' : ''}
+          error={userPassword.length > 0 && !validatePassword(userPassword)}
+          helperText={userPassword.length > 0 && !validatePassword(userPassword) ? 'Senha deve ter pelo menos 6 caracteres, uma letra maiúscula, uma letra minúscula e um caractere especial.' : ''}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <MUIIconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </MUIIconButton>
+              </InputAdornment>
+            ),
+          }}
         />
         <Box display="flex" alignItems="center" marginTop="10px">
           <Typography>Administrador</Typography>
@@ -153,12 +169,39 @@ const AddUserModal = ({ open, onClose, onSave }) => {
   );
 };
 
+const DeleteConfirmationModal = ({ open, onClose, onConfirm }) => (
+  <Modal open={open} onClose={onClose}>
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      position="absolute"
+      top="30%"
+      left="30%"
+      bgcolor="white"
+      padding="20px"
+      borderRadius="10px"
+      boxShadow="0 4px 8px rgba(0, 0, 0, 0.1)"
+      width="400px"
+    >
+      <Typography variant="h6" marginBottom="20px">Confirmar Exclusão</Typography>
+      <Typography>Tem certeza de que deseja excluir este usuário?</Typography>
+      <Box display="flex" justifyContent="space-between" width="100%" marginTop="20px">
+        <CustomButton variant="contained" onClick={onConfirm}>Excluir</CustomButton>
+        <Button variant="outlined" onClick={onClose}>Cancelar</Button>
+      </Box>
+    </Box>
+  </Modal>
+);
+
 const ControleAdmin = () => {
   const [adminData, setAdminData] = useState(null);
   const [editProfile, setEditProfile] = useState(false);
   const [deleteProfile, setDeleteProfile] = useState(false);
   const [addUser, setAddUser] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
@@ -213,11 +256,12 @@ const ControleAdmin = () => {
     }
   };
 
-  const handleDeleteUser = (email) => {
-    const updatedUsers = users.filter(user => user.email !== email);
+  const handleDeleteUser = () => {
+    const updatedUsers = users.filter(user => user.email !== selectedUser.email);
     setUsers(updatedUsers);
     localStorage.setItem('users', JSON.stringify(updatedUsers));
-    setSelectedUser(null); 
+    setSelectedUser(null);
+    setDeleteModalOpen(false);
     setSnackbar({ open: true, message: 'Usuário excluído!', severity: 'success' });
   };
 
@@ -230,7 +274,7 @@ const ControleAdmin = () => {
       <InnerDiv>
         <SectionTitle>Controle de Usuários</SectionTitle>
         <Box display="flex" flexDirection="column" alignItems="center">
-          <ProfileImage src='../assets/sesi-senai.png' alt="Profile" />
+          <ProfileImage src='./src/assets/sesi-senai.png' alt="Profile" />
           {adminData && !selectedUser && (
             <>
               <Typography variant="h6" marginBottom="10px">{adminData.name}</Typography>
@@ -239,7 +283,8 @@ const ControleAdmin = () => {
           <CustomButton variant="contained" onClick={() => setModalOpen(true)}>Adicionar Usuário</CustomButton>
         </Box>
         <AddUserModal open={isModalOpen} onClose={() => setModalOpen(false)} onSave={handleAddUser} />
-        
+        <DeleteConfirmationModal open={isDeleteModalOpen} onClose={() => setDeleteModalOpen(false)} onConfirm={handleDeleteUser} />
+
         {/* Lista de Usuários */}
         <Box marginTop="20px">
           {users.map((user, index) => (
@@ -254,15 +299,17 @@ const ControleAdmin = () => {
               sx={{ cursor: 'pointer', padding: '10px', borderRadius: '10px' }}
             >
               <Box display="flex" alignItems="center">
-                <ProfileImage src='../assets/default-user.png' alt="User" />
+                <ProfileImage src='./src/assets/sesi-senai.png' alt="User" />
                 <Box marginLeft="10px">
                   <Text>{user.name}</Text>
                   <Typography>{user.email}</Typography>
+                  <Typography variant="body2" color="textSecondary">Senha: {user.senha}</Typography>
                 </Box>
               </Box>
               <IconButton onClick={(e) => {
                 e.stopPropagation();
-                handleDeleteUser(user.email);
+                setSelectedUser(user);
+                setDeleteModalOpen(true);
               }}>
                 <CloseIcon />
               </IconButton>

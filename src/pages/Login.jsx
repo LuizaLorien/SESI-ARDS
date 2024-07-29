@@ -18,7 +18,7 @@ const Content = styled(Box)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 10px;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -26,7 +26,8 @@ const Content = styled(Box)`
   max-height: calc(100vh - 40px);
   overflow-y: auto;
   position: relative;
-  z-index: 1;
+  z-index: 2;
+  margin-top: 15vh
 `;
 
 const StyledForm = styled('form')`
@@ -36,6 +37,7 @@ const StyledForm = styled('form')`
   align-items: center;
   justify-content: space-between;
   height: 100%;
+  
 `;
 
 const Input = styled(TextField)({
