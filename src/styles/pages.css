@@ -8,6 +8,10 @@ body {
   background-color: #ffffff;
 }
 
+.bodyCadastro{
+  background-color: #ffffff;
+}
+
 ::-webkit-scrollbar {
     width: 10px;
   }

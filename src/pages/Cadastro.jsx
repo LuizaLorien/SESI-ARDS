@@ -4,6 +4,7 @@ import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import InputMask from 'react-input-mask';
+import "../styles/pages.css"
 
 const StyledContainer = styled(Container)`
   display: flex;
@@ -202,6 +203,7 @@ const ContainerCadastro = () => {
 
   return (
     <>
+    <body className='bodyCadastro'>
       <BackgroundImage src="./src/assets/sesi-senai.png" alt="Background" />
       <StyledContainer>
         <Content>
@@ -317,6 +319,7 @@ const ContainerCadastro = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
+      </body>
     </>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { styled } from '@mui/system';
 import { Box, Typography, Button, Switch, Modal, TextField, Snackbar, Alert, IconButton, InputAdornment, IconButton as MUIIconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -60,12 +60,12 @@ const CustomButton = styled(Button)({
   marginTop: '10px',
 });
 
-const ButtonWithSwitch = ({ label, on, onToggle }) => (
+const ButtonWithSwitch = React.memo(({ label, on, onToggle }) => (
   <Box display="flex" alignItems="center" justifyContent="space-between" marginBottom="10px">
     <Typography>{label}</Typography>
     <Switch checked={on} onChange={onToggle} />
   </Box>
-);
+));
 
 const validateEmail = (email) => {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -82,14 +82,14 @@ const validatePassword = (password) => {
   return re.test(password);
 };
 
-const AddUserModal = ({ open, onClose, onSave }) => {
+const AddUserModal = React.memo(({ open, onClose, onSave }) => {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     if (!validateName(userName) || !validateEmail(userEmail) || !validatePassword(userPassword)) {
       onSave(null);
     } else {
@@ -100,7 +100,7 @@ const AddUserModal = ({ open, onClose, onSave }) => {
       setIsAdmin(false);
       onClose();
     }
-  };
+  }, [userName, userEmail, userPassword, isAdmin, onSave, onClose]);
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -167,9 +167,9 @@ const AddUserModal = ({ open, onClose, onSave }) => {
       </Box>
     </Modal>
   );
-};
+});
 
-const DeleteConfirmationModal = ({ open, onClose, onConfirm }) => (
+const DeleteConfirmationModal = React.memo(({ open, onClose, onConfirm }) => (
   <Modal open={open} onClose={onClose}>
     <Box
       display="flex"
@@ -193,7 +193,7 @@ const DeleteConfirmationModal = ({ open, onClose, onConfirm }) => (
       </Box>
     </Box>
   </Modal>
-);
+));
 
 const ControleAdmin = () => {
   const [adminData, setAdminData] = useState(null);
@@ -215,7 +215,7 @@ const ControleAdmin = () => {
     setUsers(storedUsers);
   }, []);
 
-  const handleAddUser = (newUser) => {
+  const handleAddUser = useCallback((newUser) => {
     if (newUser) {
       const emailExists = users.some(user => user.email === newUser.email);
       if (emailExists) {
@@ -229,9 +229,9 @@ const ControleAdmin = () => {
     } else {
       setSnackbar({ open: true, message: 'Por favor, preencha todos os campos corretamente.', severity: 'error' });
     }
-  };
+  }, [users]);
 
-  const handleSelectUser = (user) => {
+  const handleSelectUser = useCallback((user) => {
     if (selectedUser && selectedUser.email === user.email) {
       setSelectedUser(null);
     } else {
@@ -240,9 +240,9 @@ const ControleAdmin = () => {
       setDeleteProfile(user.permissions.deleteProfile);
       setAddUser(user.permissions.addUser);
     }
-  };
+  }, [selectedUser]);
 
-  const handleSavePermissions = () => {
+  const handleSavePermissions = useCallback(() => {
     if (selectedUser) {
       const updatedUsers = users.map(user =>
         user.email === selectedUser.email
@@ -254,20 +254,49 @@ const ControleAdmin = () => {
       setSelectedUser(null);
       setSnackbar({ open: true, message: 'Permissões atualizadas!', severity: 'success' });
     }
-  };
+  }, [selectedUser, users, editProfile, deleteProfile, addUser]);
 
-  const handleDeleteUser = () => {
+  const handleDeleteUser = useCallback(() => {
     const updatedUsers = users.filter(user => user.email !== selectedUser.email);
     setUsers(updatedUsers);
     localStorage.setItem('users', JSON.stringify(updatedUsers));
     setSelectedUser(null);
     setDeleteModalOpen(false);
     setSnackbar({ open: true, message: 'Usuário excluído!', severity: 'success' });
-  };
+  }, [users, selectedUser]);
 
-  const handleCloseSnackbar = () => {
+  const handleCloseSnackbar = useCallback(() => {
     setSnackbar({ ...snackbar, open: false });
-  };
+  }, [snackbar]);
+
+  const userComponents = useMemo(() => users.map((user, index) => (
+    <Box
+      key={index}
+      display="flex"
+      alignItems="center"
+      justifyContent="space-between"
+      marginBottom="10px"
+      bgcolor={selectedUser?.email === user.email ? '#e0f7fa' : 'transparent'}
+      onClick={() => handleSelectUser(user)}
+      sx={{ cursor: 'pointer', padding: '10px', borderRadius: '10px' }}
+    >
+      <Box display="flex" alignItems="center">
+        <ProfileImage src='./src/assets/sesi-senai.png' alt="User" />
+        <Box marginLeft="10px">
+          <Text>{user.name}</Text>
+          <Typography>{user.email}</Typography>
+          <Typography variant="body2" color="textSecondary">Senha: {user.senha}</Typography>
+        </Box>
+      </Box>
+      <IconButton onClick={(e) => {
+        e.stopPropagation();
+        setSelectedUser(user);
+        setDeleteModalOpen(true);
+      }}>
+        <CloseIcon />
+      </IconButton>
+    </Box>
+  )), [users, selectedUser, handleSelectUser]);
 
   return (
     <ControleAdminContainer>
@@ -287,34 +316,7 @@ const ControleAdmin = () => {
 
         {/* Lista de Usuários */}
         <Box marginTop="20px">
-          {users.map((user, index) => (
-            <Box
-              key={index}
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              marginBottom="10px"
-              bgcolor={selectedUser?.email === user.email ? '#e0f7fa' : 'transparent'}
-              onClick={() => handleSelectUser(user)}
-              sx={{ cursor: 'pointer', padding: '10px', borderRadius: '10px' }}
-            >
-              <Box display="flex" alignItems="center">
-                <ProfileImage src='./src/assets/sesi-senai.png' alt="User" />
-                <Box marginLeft="10px">
-                  <Text>{user.name}</Text>
-                  <Typography>{user.email}</Typography>
-                  <Typography variant="body2" color="textSecondary">Senha: {user.senha}</Typography>
-                </Box>
-              </Box>
-              <IconButton onClick={(e) => {
-                e.stopPropagation();
-                setSelectedUser(user);
-                setDeleteModalOpen(true);
-              }}>
-                <CloseIcon />
-              </IconButton>
-            </Box>
-          ))}
+          {userComponents}
         </Box>
 
         {/* Descrição do ADMINISTRADOR */}
