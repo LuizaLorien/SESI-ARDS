@@ -6,9 +6,14 @@ import AdminCalendar from './pages/Calendario';
 import ProfilePage from './pages/Perfil';
 import  ControleAdmin  from './pages/ControleAdmin';
 import ClientPage from './pages/ClienteCalendario';
+import Navbar from './components/Navbar.jsx'
 
 const App = () => {
   return (
+    <>
+    <header>
+    <Navbar/>
+    </header>
     <Router>
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
@@ -20,6 +25,7 @@ const App = () => {
         <Route path='/controlerAdm' element={<ControleAdmin/>}/>
       </Routes>
     </Router>
+    </>
   );
 };
 

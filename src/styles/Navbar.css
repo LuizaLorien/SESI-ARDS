@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+:root{
+    --deep-blue: rgb(1, 13, 20);
+    --green: rgb(51, 156, 81);
+    --light-green: rgb(150, 231, 173);
+    --blue: rgb(0, 81, 211);
+    --gray: rgb(122, 122, 122);
+    --light-gray: rgb(221, 221, 221);
+};
+
+header{
+color: white;
+}
+
+.Nav-Box{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+    padding: 5px;
+    margin: 0;
+    width: 1920px;
+    height: 70px;
+    background-color: var(--deep-blue);
+};
+
