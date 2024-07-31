@@ -13,15 +13,3 @@ header{
 color: white;
 }
 
-.Nav-Box{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 30px;
-    padding: 5px;
-    margin: 0;
-    width: 1920px;
-    height: 70px;
-    background-color: var(--deep-blue);
-};
-
