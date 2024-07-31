@@ -4,45 +4,52 @@ import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import InputMask from 'react-input-mask';
-import "../styles/pages.css"
+import "../styles/pages.css";
 
-const StyledContainer = styled(Container)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #ffffff;
-  position: relative;
-  
-`;
+const StyledContainer = styled(Container)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '100vh',
+  backgroundColor: '#ffffff',
+  position: 'relative',
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1),
+  },
+}));
 
-const Content = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 450px;
-  max-height: calc(100vh - 0px);
-  overflow-y: hiden;
-  position: relative;
-  z-index: 1;
-  margin-top: 120px
-`;
-
-const StyledForm = styled('form')`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  height: 100%;
-`;
-
-const Input = styled(TextField)({
+const Content = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  padding: theme.spacing(2),
+  backgroundColor: '#ffffff',
+  borderRadius: 8,
+  boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
   width: '100%',
+  maxWidth: '450px',
+  position: 'relative',
+  zIndex: 1,
+  marginTop: '250px', 
+  [theme.breakpoints.down('sm')]: {
+    width: '90%',
+    marginTop: '60px',
+    padding: theme.spacing(1),
+  },
+}));
+
+const StyledForm = styled('form')({
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  height: '100%',
+});
+
+const Input = styled(TextField)(({ theme }) => ({
+  width: '100%',
+  margin: theme.spacing(1, 0),
   '& .MuiInputBase-input': {
     padding: '15px',
     fontSize: '16px',
@@ -53,25 +60,35 @@ const Input = styled(TextField)({
     fontSize: '20px',
     fontFamily: 'Roboto, sans-serif',
   },
-});
+  [theme.breakpoints.down('sm')]: {
+    margin: theme.spacing(1, 0),
+  },
+}));
 
-const CadastroTitle = styled(Typography)`
-  color: #002B6D;
-  font-family: 'Roboto', sans-serif;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  font-size: 50px;
-`;
+const CadastroTitle = styled(Typography)(({ theme }) => ({
+  color: '#002B6D',
+  fontFamily: 'Roboto, sans-serif',
+  margin: theme.spacing(2, 0),
+  fontSize: '50px',
+  textAlign: 'center',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '36px',
+  },
+}));
 
-const BackgroundImage = styled('img')`
-  position: absolute;
-  top: -30px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 200px;
-  height: 150px;
-  z-index: 3;
-`;
+const BackgroundImage = styled('img')(({ theme }) => ({
+  position: 'absolute',
+  top: '100px',
+  left: '50%',
+  transform: 'translateX(-50%)',
+  width: '300px',
+  height: '300px',
+  zIndex: 1,
+  [theme.breakpoints.down('sm')]: {
+    width: '150px',
+    height: '100px',
+  },
+}));
 
 const validateCPF = (cpf) => {
   cpf = cpf.replace(/[^\d]/g, '');
@@ -168,7 +185,7 @@ const ContainerCadastro = () => {
         email,
         senha: password,
         cpf,
-        isAdmin: false,  // aqui estou dizendo que o usuario é um usario comum, sem ser cadastrado pelo ADM
+        isAdmin: false,
       };
       storedUsers.push(newUser);
       localStorage.setItem('users', JSON.stringify(storedUsers));
@@ -203,7 +220,6 @@ const ContainerCadastro = () => {
 
   return (
     <>
-    <body className='bodyCadastro'>
       <BackgroundImage src="./src/assets/sesi-senai.png" alt="Background" />
       <StyledContainer>
         <Content>
@@ -319,7 +335,6 @@ const ContainerCadastro = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-      </body>
     </>
   );
 }
