@@ -1,5 +1,16 @@
 import React, { useState, useCallback } from 'react';
-import { Container, Box, TextField, Button, Typography, Snackbar, Alert, IconButton, InputAdornment, CircularProgress } from '@mui/material';
+import {
+  Container,
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Snackbar,
+  Alert,
+  IconButton,
+  InputAdornment,
+  CircularProgress
+} from '@mui/material';
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 import Visibility from '@mui/icons-material/Visibility';
@@ -134,71 +145,69 @@ function ContainerLogin() {
   };
 
   return (
-    <>
-      <BodyLogin>
-        <BackgroundImage src="./src/assets/sesi-senai.png" alt="Logo" loading="lazy" />
-        <StyledContainer maxWidth="sm">
-          <Content>
-            <LoginTitle variant="h1">Login</LoginTitle>
-            <StyledForm onSubmit={handleSubmit}>
-              <Input
-                label="Digite seu email"
-                type="email"
-                variant="outlined"
-                fullWidth
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <Input
-                label="Digite sua senha"
-                type={showPassword ? 'text' : 'password'}
-                variant="outlined"
-                fullWidth
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                sx={{ mt: 2, width: '100%', height: '50px' }}
-                disabled={loading}
-              >
-                {loading ? <CircularProgress size={24} /> : 'Entrar'}
-              </Button>
-              <Button
-                variant="text"
-                color="primary"
-                onClick={() => navigate('/cadastro')}
-                sx={{ mt: 2 }}
-              >
-                Quero me cadastrar
-              </Button>
-            </StyledForm>
-          </Content>
-        </StyledContainer>
-        <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleSnackbarClose}>
-          <Alert onClose={handleSnackbarClose} severity="error" sx={{ width: '100%' }}>
-            {errorMessage}
-          </Alert>
-        </Snackbar>
-      </BodyLogin>
-    </>
+    <BodyLogin>
+      <BackgroundImage src="./src/assets/sesi-senai.png" alt="Logo" loading="lazy" />
+      <StyledContainer>
+        <Content>
+          <LoginTitle variant="h1">Login</LoginTitle>
+          <StyledForm onSubmit={handleSubmit}>
+            <Input
+              label="Digite seu email"
+              type="email"
+              variant="outlined"
+              fullWidth
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+              label="Digite sua senha"
+              type={showPassword ? 'text' : 'password'}
+              variant="outlined"
+              fullWidth
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2, width: '100%', height: '50px' }}
+              disabled={loading}
+            >
+              {loading ? <CircularProgress size={24} /> : 'Entrar'}
+            </Button>
+            <Button
+              variant="text"
+              color="primary"
+              onClick={() => navigate('/cadastro')}
+              sx={{ mt: 2 }}
+            >
+              Quero me cadastrar
+            </Button>
+          </StyledForm>
+        </Content>
+      </StyledContainer>
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity="error" sx={{ width: '100%' }}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+    </BodyLogin>
   );
 }
 

@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { Container, Box, TextField, Button, Typography, Snackbar, Alert, IconButton, InputAdornment, FormControlLabel, Checkbox } from '@mui/material';
+import React, { useState, useCallback } from 'react';
+import { Container, Box, TextField, Button, Typography, Snackbar, Alert, FormControlLabel, Checkbox } from '@mui/material';
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
 import InputMask from 'react-input-mask';
 import "../styles/pages.css";
+import { validateCPF, validatePasswordComplexity } from '../utils/validation'; // Importa funções de validação de um arquivo externo
 
+// Estiliza o Container principal usando MUI system
 const StyledContainer = styled(Container)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
@@ -18,6 +19,7 @@ const StyledContainer = styled(Container)(({ theme }) => ({
   },
 }));
 
+// Estiliza o Box que contém o conteúdo do formulário
 const Content = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -38,6 +40,7 @@ const Content = styled(Box)(({ theme }) => ({
   },
 }));
 
+// Estiliza o formulário
 const StyledForm = styled('form')({
   width: '100%',
   display: 'flex',
@@ -47,6 +50,7 @@ const StyledForm = styled('form')({
   height: '100%',
 });
 
+// Estiliza os campos de entrada
 const Input = styled(TextField)(({ theme }) => ({
   width: '100%',
   margin: theme.spacing(1, 0),
@@ -65,6 +69,7 @@ const Input = styled(TextField)(({ theme }) => ({
   },
 }));
 
+// Estiliza o título do cadastro
 const CadastroTitle = styled(Typography)(({ theme }) => ({
   color: '#002B6D',
   fontFamily: 'Roboto, sans-serif',
@@ -76,6 +81,7 @@ const CadastroTitle = styled(Typography)(({ theme }) => ({
   },
 }));
 
+// Estiliza a imagem de fundo
 const BackgroundImage = styled('img')(({ theme }) => ({
   position: 'absolute',
   top: '100px',
@@ -90,36 +96,13 @@ const BackgroundImage = styled('img')(({ theme }) => ({
   },
 }));
 
-const validateCPF = (cpf) => {
-  cpf = cpf.replace(/[^\d]/g, '');
-  if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
-
-  let sum = 0;
-  for (let i = 1; i <= 9; i++) sum += parseInt(cpf.substring(i - 1, i)) * (11 - i);
-  let remainder = (sum * 10) % 11;
-  if (remainder === 10 || remainder === 11) remainder = 0;
-  if (remainder !== parseInt(cpf.substring(9, 10))) return false;
-
-  sum = 0;
-  for (let i = 1; i <= 10; i++) sum += parseInt(cpf.substring(i - 1, i)) * (12 - i);
-  remainder = (sum * 10) % 11;
-  if (remainder === 10 || remainder === 11) remainder = 0;
-  if (remainder !== parseInt(cpf.substring(10, 11))) return false;
-
-  return true;
-};
-
-const validatePasswordComplexity = (password) => {
-  const complexityPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
-  return complexityPattern.test(password);
-};
-
+// Componente principal do formulário de cadastro
 const ContainerCadastro = () => {
+  // Estado para armazenar os valores dos campos e mensagens de erro
   const [cpf, setCpf] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [cpfError, setCpfError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -128,31 +111,37 @@ const ContainerCadastro = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const [openSnackbar, setOpenSnackbar] = useState(false);
+
   const navigate = useNavigate();
 
-  const validateForm = () => {
+  // Função para validar o formulário
+  const validateForm = useCallback(() => {
     let isValid = true;
     setCpfError('');
     setEmailError('');
     setPasswordError('');
     setConfirmPasswordError('');
 
+    // Valida CPF
     if (!validateCPF(cpf)) {
       setCpfError('CPF inválido');
       isValid = false;
     }
 
+    // Verifica se o email já está cadastrado
     const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
     if (storedUsers.some(user => user.email === email)) {
       setEmailError('Email já cadastrado');
       isValid = false;
     }
 
+    // Valida email
     if (!email || !/\S+@\S+\.\S+/.test(email)) {
       setEmailError('Email inválido');
       isValid = false;
     }
 
+    // Valida senha
     if (!password || password.length < 6) {
       setPasswordError('A senha deve ter pelo menos 6 caracteres');
       isValid = false;
@@ -161,11 +150,13 @@ const ContainerCadastro = () => {
       isValid = false;
     }
 
+    // Verifica se as senhas coincidem
     if (password !== confirmPassword) {
       setConfirmPasswordError('As senhas não coincidem');
       isValid = false;
     }
 
+    // Verifica se os termos foram aceitos
     if (!termsAccepted) {
       setSnackbarMessage('Você deve aceitar os termos de serviço');
       setSnackbarSeverity('error');
@@ -174,11 +165,13 @@ const ContainerCadastro = () => {
     }
 
     return isValid;
-  };
+  }, [cpf, email, password, confirmPassword, termsAccepted]);
 
-  const handleSubmit = (e) => {
+  // Função para enviar o formulário
+  const handleSubmit = useCallback((e) => {
     e.preventDefault();
     if (validateForm()) {
+      // Adiciona novo usuário ao localStorage
       const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
       const newUser = {
         nome: e.target[0].value,
@@ -190,32 +183,28 @@ const ContainerCadastro = () => {
       storedUsers.push(newUser);
       localStorage.setItem('users', JSON.stringify(storedUsers));
 
+      // Exibe mensagem de sucesso
       setSnackbarMessage('Cadastro realizado com sucesso!');
       setSnackbarSeverity('success');
       setOpenSnackbar(true);
 
       navigate('/login');
     } else {
+      // Exibe mensagem de erro
       setSnackbarMessage('Por favor, corrija os erros no formulário.');
       setSnackbarSeverity('error');
       setOpenSnackbar(true);
     }
-  };
+  }, [validateForm, email, password, cpf, navigate]);
 
-  const handleBackClick = () => {
+  // Função para voltar à tela de login
+  const handleBackClick = useCallback(() => {
     navigate('/login');
-  };
+  }, [navigate]);
 
+  // Função para fechar a snackbar
   const handleSnackbarClose = () => {
     setOpenSnackbar(false);
-  };
-
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
   };
 
   return (
@@ -225,6 +214,7 @@ const ContainerCadastro = () => {
         <Content>
           <CadastroTitle variant="h1">Cadastre-se</CadastroTitle>
           <StyledForm onSubmit={handleSubmit}>
+            {/* Campo para o nome completo */}
             <Input
               label="Nome Completo"
               variant="outlined"
@@ -232,6 +222,7 @@ const ContainerCadastro = () => {
               margin="normal"
               required
             />
+            {/* Campo para o email */}
             <Input
               label="Digite seu email"
               type="email"
@@ -244,9 +235,10 @@ const ContainerCadastro = () => {
               error={!!emailError}
               helperText={emailError}
             />
+            {/* Campo para a senha */}
             <Input
               label="Digite sua senha"
-              type={showPassword ? 'text' : 'password'}
+              type="password"  // Sempre exibe como senha
               variant="outlined"
               fullWidth
               margin="normal"
@@ -256,24 +248,11 @@ const ContainerCadastro = () => {
               onChange={(e) => setPassword(e.target.value)}
               error={!!passwordError}
               helperText={passwordError}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
             />
+            {/* Campo para confirmar a senha */}
             <Input
               label="Confirme sua senha"
-              type={showPassword ? 'text' : 'password'}
+              type="password"  // Sempre exibe como senha
               variant="outlined"
               fullWidth
               margin="normal"
@@ -283,6 +262,7 @@ const ContainerCadastro = () => {
               error={!!confirmPasswordError}
               helperText={confirmPasswordError}
             />
+            {/* Campo para o CPF com máscara */}
             <InputMask
               mask="999.999.999-99"
               value={cpf}
@@ -307,10 +287,12 @@ const ContainerCadastro = () => {
                 />
               )}
             </InputMask>
+            {/* Checkbox para aceitar os termos de serviço */}
             <FormControlLabel
               control={<Checkbox checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} />}
               label="Eu aceito os termos de serviço"
             />
+            {/* Botão para submeter o formulário */}
             <Button
               type="submit"
               variant="contained"
@@ -319,6 +301,7 @@ const ContainerCadastro = () => {
             >
               Cadastrar
             </Button>
+            {/* Botão para voltar ao login */}
             <Button
               variant="text"
               color="primary"
@@ -330,6 +313,7 @@ const ContainerCadastro = () => {
           </StyledForm>
         </Content>
       </StyledContainer>
+      {/* Snackbar para exibir mensagens de sucesso ou erro */}
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleSnackbarClose}>
         <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
           {snackbarMessage}
@@ -337,6 +321,7 @@ const ContainerCadastro = () => {
       </Snackbar>
     </>
   );
-}
+};
 
-export default ContainerCadastro;
+// Exporta o componente memoizado para evitar renderizações desnecessárias
+export default React.memo(ContainerCadastro);
