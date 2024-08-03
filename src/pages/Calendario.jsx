@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { formatDate } from '@fullcalendar/core';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -8,27 +8,18 @@ import '../styles/Calendario.css';
 
 let eventGuid = 0;
 
-export const Eventos_Iniciais = [
-  {
-    id: CriarEventoId(),
-    title: 'Reunião de Planejamento',
-    start: '2024-07-31T14:00:00',
-  },
-  {
-    id: CriarEventoId(),
-    title: 'Reunião de Equipe',
-    start: '2024-07-31T14:00:00',
-  }
-];
-
 export function CriarEventoId() {
   return String(eventGuid++);
 }
 
 export default function DemostracaoApp() {
   const [semanasVisiveis, setSemanasVisiveis] = useState(true);
-  const [eventosAtuais, setEventosAtuais] = useState([]);
+  const [eventosAtuais, setEventosAtuais] = useState(JSON.parse(localStorage.getItem('eventos')) || []);
   const [modalInfo, setModalInfo] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem('eventos', JSON.stringify(eventosAtuais));
+  }, [eventosAtuais]);
 
   function fimDeSemana() {
     setSemanasVisiveis(!semanasVisiveis);
@@ -68,20 +59,33 @@ export default function DemostracaoApp() {
     startDate.setHours(startHour, startMinute);
     endDate.setHours(endHour, endMinute);
 
-    modalInfo.calendarApi.unselect();
-
-    modalInfo.calendarApi.addEvent({
+    const newEvent = {
       id: CriarEventoId(),
       title,
       start: startDate,
       end: endDate,
-      allDay: false
+      allDay: false,
+      extendedProps: { isAdmin: true }
+    };
+
+    setEventosAtuais((prevEventos) => {
+      const updatedEventos = [...prevEventos, newEvent];
+      localStorage.setItem('eventos', JSON.stringify(updatedEventos));
+      return updatedEventos;
     });
 
+    modalInfo.calendarApi.addEvent(newEvent);
+    modalInfo.calendarApi.unselect();
     handleModalClose();
   }
 
   function handleEventRemove() {
+    const eventId = modalInfo.event.id;
+    setEventosAtuais((prevEventos) => {
+      const updatedEventos = prevEventos.filter(event => event.id !== eventId);
+      localStorage.setItem('eventos', JSON.stringify(updatedEventos));
+      return updatedEventos;
+    });
     modalInfo.event.remove();
     handleModalClose();
   }
@@ -108,7 +112,7 @@ export default function DemostracaoApp() {
           selectMirror={true}
           dayMaxEvents={true}
           weekends={semanasVisiveis}
-          initialEvents={Eventos_Iniciais}
+          initialEvents={eventosAtuais}
           select={handleDateSelect}
           eventContent={renderEventContent}
           eventClick={handleEventClick}
@@ -184,9 +188,9 @@ function Modal({ info, onClose, onCreate, onRemove }) {
       }
       onCreate(title, horarioInicial, horarioFinal);
     } else if (info.type === 'confirm') {
-      if (window.confirm(`Você tem certeza que quer remover esse evento? '${info.event.title}'`)) {
+      
         onRemove();
-      }
+
     }
   }
 

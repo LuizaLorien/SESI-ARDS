@@ -40,22 +40,25 @@ b {
 .demo-app-sidebar {
   width: 300px;
   line-height: 1.5;
-  background: #eaf9ff;
+  background: #ffffff;
   border-right: 1px solid #d3e2e8;
 }
 
 .demo-app-sidebar-section {
-  padding: 2em;
+  padding: 2rem;
 }
 
-.demo-app-main {
+.demo-app-main{
+  background-color: #ACC3DE;
   flex-grow: 1;
-  padding: 3em;
+  padding: 3rem;
 }
 
 .fc { 
   max-width: 1100px;
-  margin: 0 auto;
+  padding: 10px;
+  background-color: #ACC3DE;
+
 }
 
 .fc-event {
@@ -65,6 +68,21 @@ b {
   border-radius: 3px; 
   padding: 2px 4px; 
   width: 148px;
+}
+
+.fc-daygrid-day-top{
+  padding-right: 20px;
+}
+
+.fc-today-bg-color{
+  background-color: black;
+  background: black;
+  color: black;
+}
+
+
+.fc-day{
+  background-color: #ffffff;
 }
 
 
@@ -140,6 +158,12 @@ b {
 
 .modal-content {
   padding-top: 30px; 
+}
+
+
+.fc-daygrid-day-frame .fc-scrollgrid-sync-inner{
+  color: tomato;
+  border-radius: 20%;
 }
 
 
