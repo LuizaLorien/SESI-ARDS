@@ -7,6 +7,7 @@ import ProfilePage from './pages/Perfil';
 import  ControleAdmin  from './pages/ControleAdmin';
 import ClientPage from './pages/ClienteCalendario';
 import Navbar from './components/Navbar.jsx'
+import HomeLogado from './pages/Home.jsx'
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
+        <Route path='/home' element={<HomeLogado />} />
         <Route path="/login" element={<Login />} />
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/calendario" element={<AdminCalendar />} />

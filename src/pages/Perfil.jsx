@@ -268,7 +268,6 @@ const ProfilePage = () => {
                 </Box>
               </StyledPaper>
             </Grid>
-
             {/* Coluna da direita */}
             <Grid item xs={12} md={9}>
               <StyledPaper>

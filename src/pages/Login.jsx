@@ -147,7 +147,7 @@ function ContainerLogin() {
   return (
     <BodyLogin>
       <BackgroundImage src="./src/assets/sesi-senai.png" alt="Logo" loading="lazy" />
-      <StyledContainer>
+      <StyledContainer maxWidth="100%">
         <Content>
           <LoginTitle variant="h1">Login</LoginTitle>
           <StyledForm onSubmit={handleSubmit}>
