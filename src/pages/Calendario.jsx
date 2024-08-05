@@ -145,8 +145,6 @@ function Sidebar({ EventosAtuais }) {
   return (
     <div className='demo-app-sidebar'>
       <div className='demo-app-sidebar-section'>
-      </div>
-      <div className='demo-app-sidebar-section'>
         <h2>Reuniões Marcadas ({EventosAtuais.length})</h2>
         <ul>
           {EventosAtuais.map((event) => (
