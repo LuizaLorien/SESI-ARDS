@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import InputMask from 'react-input-mask';
 import "../styles/pages.css";
 import { validateCPF, validatePasswordComplexity } from '../utils/validation'; 
-import { ClassNames } from '@emotion/react';
+
 
 // Estiliza o Container principal usando MUI system
 const StyledContainer = styled(Container)(({ theme }) => ({

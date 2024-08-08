@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import {
   Container,
   Box,
@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
+// Estilização dos componentes usando MUI
 const BodyLogin = styled('div')(({ theme }) => ({
   backgroundColor: '#ffffff',
   minHeight: '100vh',
@@ -86,21 +87,28 @@ const LoginTitle = styled(Typography)(({ theme }) => ({
   },
 }));
 
+// Componente principal de login
 function ContainerLogin() {
+  // Estados locais para email, senha, visibilidade da senha, mensagens de erro, snackbar e carregamento
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Hook de navegação do React Router
   const navigate = useNavigate();
 
+  // Função para validar o formato do email
   const validateEmail = useCallback((email) => /\S+@\S+\.\S+/.test(email), []);
 
+  // Função que lida com o envio do formulário de login
   const handleSubmit = useCallback((e) => {
     e.preventDefault();
     setLoading(true);
 
+    // Validação do email
     if (!validateEmail(email)) {
       setErrorMessage('Email inválido');
       setOpenSnackbar(true);
@@ -108,6 +116,7 @@ function ContainerLogin() {
       return;
     }
 
+    // Verificação de credenciais do administrador
     if (email === 'admin@gmail.com' && password === 'admin000') {
       localStorage.setItem('user', JSON.stringify({ email, name: 'Admin', isAdmin: true }));
       setLoading(false);
@@ -115,15 +124,18 @@ function ContainerLogin() {
       return;
     }
 
+    // Recupera os usuários armazenados no localStorage
     const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
     const user = storedUsers.find((user) => user.email === email && user.senha === password);
 
+    // Verifica se o usuário foi encontrado
     if (user) {
       setErrorMessage('');
       localStorage.setItem('user', JSON.stringify(user));
       setLoading(false);
       navigate(user.isAdmin ? '/controlerAdm' : '/home');
     } else {
+      // Caso as credenciais sejam inválidas, exibe uma mensagem de erro
       setErrorMessage('Credenciais inválidas');
       setOpenSnackbar(true);
       setLoading(false);
@@ -132,10 +144,12 @@ function ContainerLogin() {
     }
   }, [email, password, navigate, validateEmail]);
 
+  // Função para fechar o Snackbar
   const handleSnackbarClose = () => {
     setOpenSnackbar(false);
   };
 
+  // Funções para mostrar/esconder a senha
   const handleClickShowPassword = () => {
     setShowPassword((prev) => !prev);
   };
@@ -146,10 +160,13 @@ function ContainerLogin() {
 
   return (
     <BodyLogin>
+      {/* Imagem de fundo */}
       <BackgroundImage src="./src/assets/sesi-senai.png" alt="Logo" loading="lazy" />
       <StyledContainer maxWidth="100%">
         <Content>
+          {/* Título do login */}
           <LoginTitle variant="h1">Login</LoginTitle>
+          {/* Formulário de login */}
           <StyledForm onSubmit={handleSubmit}>
             <Input
               label="Digite seu email"
@@ -182,6 +199,7 @@ function ContainerLogin() {
                 ),
               }}
             />
+            {/* Botão de login */}
             <Button
               type="submit"
               variant="contained"
@@ -191,6 +209,7 @@ function ContainerLogin() {
             >
               {loading ? <CircularProgress size={24} /> : 'Entrar'}
             </Button>
+            {/* Botão para redirecionar ao cadastro */}
             <Button
               variant="text"
               color="primary"
@@ -202,6 +221,7 @@ function ContainerLogin() {
           </StyledForm>
         </Content>
       </StyledContainer>
+      {/* Snackbar para exibir mensagens de erro */}
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleSnackbarClose}>
         <Alert onClose={handleSnackbarClose} severity="error" sx={{ width: '100%' }}>
           {errorMessage}
@@ -211,4 +231,5 @@ function ContainerLogin() {
   );
 }
 
-export default ContainerLogin;
+// Utiliza memo para evitar renderizações desnecessárias
+export default memo(ContainerLogin);
