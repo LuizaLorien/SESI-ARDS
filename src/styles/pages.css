@@ -6,6 +6,9 @@
   margin: 0;
   padding: 0;
 }
+.bodyCadastro{
+  background-color: white;
+}
 
 /* ::-webkit-scrollbar {
     width: 10px;

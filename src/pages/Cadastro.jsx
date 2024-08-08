@@ -4,7 +4,8 @@ import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 import InputMask from 'react-input-mask';
 import "../styles/pages.css";
-import { validateCPF, validatePasswordComplexity } from '../utils/validation'; // Importa funções de validação de um arquivo externo
+import { validateCPF, validatePasswordComplexity } from '../utils/validation'; 
+import { ClassNames } from '@emotion/react';
 
 // Estiliza o Container principal usando MUI system
 const StyledContainer = styled(Container)(({ theme }) => ({
@@ -98,6 +99,7 @@ const BackgroundImage = styled('img')(({ theme }) => ({
 
 // Componente principal do formulário de cadastro
 const ContainerCadastro = () => {
+
   // Estado para armazenar os valores dos campos e mensagens de erro
   const [cpf, setCpf] = useState('');
   const [email, setEmail] = useState('');
@@ -209,6 +211,7 @@ const ContainerCadastro = () => {
 
   return (
     <>
+    <body className='bodyCadastro'>
       <BackgroundImage src="./src/assets/sesi-senai.png" alt="Background" />
       <StyledContainer>
         <Content>
@@ -319,7 +322,9 @@ const ContainerCadastro = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-    </>
+      </body>
+  </>
+    
   );
 };
 
