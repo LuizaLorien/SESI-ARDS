@@ -40,11 +40,13 @@ b {
 }
 
 .demo-app-sidebar {
+  display: flex;
+  flex-direction: column;
   width: auto;
   line-height: 1.5;
   background: #ffffff;
   border-right: 1px solid #d3e2e8;
-  min-height: 930px;
+  height: 100%;
 }
 
 .demo-app-sidebar-section {

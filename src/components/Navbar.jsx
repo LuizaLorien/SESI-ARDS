@@ -7,7 +7,7 @@ function BasicExample() {
   return (
     <Navbar fixed="top" expand="lg" className="Navbar">
       <Nav >
-        <Dropdown className="dropdown-basic">
+        <Dropdown className="dropdown-basic" data-toggle="collapse" data-target="#dropdown">
           <Dropdown.Toggle as="div">
             <FaBars style={{ color: 'white' }} />
           </Dropdown.Toggle>
