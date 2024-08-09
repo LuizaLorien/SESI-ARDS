@@ -1,3 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
+*{
+  font-family: 'Roboto', sans-serif;
+}
 
 body,
 body > div {
@@ -38,17 +43,25 @@ b {
 
 
 .sidebar {
-  width: 300px;
-  line-height: 1.5;
-  background: #eaf9ff;
-  border-right: 1px solid #d3e2e8;
-  padding: 2em;
+      display: flex;
+    flex-direction: column;
+    width: auto;
+    line-height: 1.5;
+    background: #ffffff;
+    border-right: 1px solid #d3e2e8;
+    height: 100%;
+}
+
+
+.sidebar h2{
+    padding: 40px;
 }
 
 .client-page-main {
   flex-grow: 1;
   padding: 3em;
 }
+
 
 
 .fc {
