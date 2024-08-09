@@ -1,3 +1,4 @@
+// Código do Administrador
 import React, { useState, useEffect } from 'react';
 import { formatDate } from '@fullcalendar/core';
 import FullCalendar from '@fullcalendar/react';
@@ -65,7 +66,7 @@ export default function DemostracaoApp() {
       start: startDate,
       end: endDate,
       allDay: false,
-      extendedProps: { isAdmin: true }
+      extendedProps: { isAdmin: true, status: 'Confirmado' }
     };
 
     setEventosAtuais((prevEventos) => {
@@ -142,15 +143,24 @@ function renderEventContent(eventInfo) {
 }
 
 function Sidebar({ EventosAtuais }) {
+  const eventosPendentes = EventosAtuais.filter(evento => evento.extendedProps.status === 'Pendente');
+  const eventosConfirmados = EventosAtuais.filter(evento => evento.extendedProps.status === 'Confirmado');
+
   return (
     <div className='demo-app-sidebar'>
       <div className='demo-app-sidebar-section'>
+        <h2>Eventos Pendentes ({eventosPendentes.length})</h2>
+        <ul>
+          {eventosPendentes.map(evento => (
+            <SidebarEvent key={evento.id} event={evento} />
+          ))}
+        </ul>
       </div>
       <div className='demo-app-sidebar-section'>
-        <h2>Reuniões Marcadas ({EventosAtuais.length})</h2>
+        <h2>Eventos Confirmados ({eventosConfirmados.length})</h2>
         <ul>
-          {EventosAtuais.map((event) => (
-            <SidebarEvent key={event.id} event={event} />
+          {eventosConfirmados.map(evento => (
+            <SidebarEvent key={evento.id} event={evento} />
           ))}
         </ul>
       </div>
@@ -188,9 +198,7 @@ function Modal({ info, onClose, onCreate, onRemove }) {
       }
       onCreate(title, horarioInicial, horarioFinal);
     } else if (info.type === 'confirm') {
-      
-        onRemove();
-
+      onRemove();
     }
   }
 
