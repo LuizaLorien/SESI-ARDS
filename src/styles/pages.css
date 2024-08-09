@@ -1,15 +1,16 @@
-
-
-#root{
-  background-color: #fff;
+.bodyPerfil{
+  background-color: #7da0ca;
 }
 
-
+.bodyHome{
+  margin: 0;
+  padding: 0;
+}
 .bodyCadastro{
-  background-color: #ffffff;
+  background-color: white;
 }
 
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
     width: 10px;
   }
   
@@ -26,4 +27,4 @@
 
   ::-webkit-scrollbar-thumb:hover {
     background: transparent;
-  }
+  } */

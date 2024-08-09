@@ -24,8 +24,10 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useNavigate } from 'react-router-dom';
 import MuiAlert from '@mui/material/Alert';
 import * as EmailValidator from 'email-validator';
+import "../styles/pages.css"
 
-// Estilização personalizada dos componentes
+//oi pessoal fiz alguns coments para voces conseguirem estudar um pouco do que fiz, ja que nao vou poder apresentar
+
 const StyledContainer = styled(Container)({
   display: 'flex',
   justifyContent: 'center',
@@ -34,13 +36,13 @@ const StyledContainer = styled(Container)({
   width: '100vw',
   paddingTop: '20px',
   paddingBottom: '60px',
+  backgroundColor: '#7da0ca',
 });
 
 const StyledContent = styled(Box)({
   display: 'flex',
   alignItems: 'center',
   borderRadius: '15px',
-  boxShadow: '0 0 10px rgba(255, 255, 255, 0.1)',
   height: '100%',
   width: '100%',
 });
@@ -252,9 +254,9 @@ const ProfilePage = () => {
   const handleSnackbarClose = () => setOpenSnackbar(false);
 
   return (
-    <div>
+    <body className='bodyPerfil'>
       <StyledContainer>
-        <StyledContent>
+        <StyledContent >
           <Grid container spacing={1.5} justifyContent="center">
             {/* Coluna da esquerda */}
             <Grid item xs={12} md={3}>
@@ -467,7 +469,7 @@ const ProfilePage = () => {
           <Button onClick={handleLogoutConfirm} color="primary">Sair</Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </body>
   );
 };
 
