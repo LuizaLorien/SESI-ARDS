@@ -1,8 +1,10 @@
 import React, { memo, useCallback } from 'react';
 import { Box, Typography, Container, Button } from '@mui/material';
 import { styled } from '@mui/system';
-import { useNavigate } from 'react-router-dom'; // Importação do hook useNavigate
-import "../styles/pages.css"; // Importação do CSS para estilizações adicionais
+import { useNavigate } from 'react-router-dom'; 
+import "../styles/pages.css"; 
+
+//oi pessoal fiz alguns coments para voces conseguirem estudar um pouco do que fiz, ja que nao vou poder apresentar
 
 // Estilização dos componentes com MUI Styled Components
 const MainContainer = styled(Container)(({ theme }) => ({

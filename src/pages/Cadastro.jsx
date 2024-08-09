@@ -1,18 +1,20 @@
 import React, { useState, useCallback } from 'react';
-import { Container, Box, TextField, Button, Typography, Snackbar, Alert, FormControlLabel, Checkbox } from '@mui/material';
+import { Container, Box, TextField, Button, Typography, Snackbar, Alert, FormControlLabel, Checkbox, IconButton, InputAdornment } from '@mui/material';
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 import InputMask from 'react-input-mask';
+import { Visibility, VisibilityOff } from '@mui/icons-material'; // Adicione o import do ícone
 import "../styles/pages.css";
 import { validateCPF, validatePasswordComplexity } from '../utils/validation'; 
 
+import backgroundImage from '../assets/sesi-senai.png';
 
 // Estiliza o Container principal usando MUI system
 const StyledContainer = styled(Container)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  height: '100vh',
+  height: '180%',
   backgroundColor: '#ffffff',
   position: 'relative',
   [theme.breakpoints.down('sm')]: {
@@ -99,7 +101,6 @@ const BackgroundImage = styled('img')(({ theme }) => ({
 
 // Componente principal do formulário de cadastro
 const ContainerCadastro = () => {
-
   // Estado para armazenar os valores dos campos e mensagens de erro
   const [cpf, setCpf] = useState('');
   const [email, setEmail] = useState('');
@@ -113,6 +114,10 @@ const ContainerCadastro = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  // Estado para mostrar/ocultar senha
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -211,8 +216,7 @@ const ContainerCadastro = () => {
 
   return (
     <>
-    <body className='bodyCadastro'>
-      <BackgroundImage src="./src/assets/sesi-senai.png" alt="Background" />
+      <BackgroundImage src={backgroundImage} alt="Background" />
       <StyledContainer>
         <Content>
           <CadastroTitle variant="h1">Cadastre-se</CadastroTitle>
@@ -241,7 +245,7 @@ const ContainerCadastro = () => {
             {/* Campo para a senha */}
             <Input
               label="Digite sua senha"
-              type="password"  // Sempre exibe como senha
+              type={showPassword ? 'text' : 'password'}  // Permite alternar entre mostrar e ocultar a senha
               variant="outlined"
               fullWidth
               margin="normal"
@@ -251,11 +255,23 @@ const ContainerCadastro = () => {
               onChange={(e) => setPassword(e.target.value)}
               error={!!passwordError}
               helperText={passwordError}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             {/* Campo para confirmar a senha */}
             <Input
               label="Confirme sua senha"
-              type="password"  // Sempre exibe como senha
+              type={showConfirmPassword ? 'text' : 'password'}  // Permite alternar entre mostrar e ocultar a senha
               variant="outlined"
               fullWidth
               margin="normal"
@@ -264,6 +280,18 @@ const ContainerCadastro = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
               error={!!confirmPasswordError}
               helperText={confirmPasswordError}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      edge="end"
+                    >
+                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             {/* Campo para o CPF com máscara */}
             <InputMask
@@ -280,7 +308,8 @@ const ContainerCadastro = () => {
             >
               {() => (
                 <Input
-                  label="CPF"
+                  label="Digite seu CPF"
+                  type="text"
                   variant="outlined"
                   fullWidth
                   margin="normal"
@@ -292,41 +321,39 @@ const ContainerCadastro = () => {
             </InputMask>
             {/* Checkbox para aceitar os termos de serviço */}
             <FormControlLabel
-              control={<Checkbox checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} />}
-              label="Eu aceito os termos de serviço"
+              control={
+                <Checkbox
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
+                  name="terms"
+                  color="primary"
+                />
+              }
+              label="Aceito os termos de serviço"
             />
-            {/* Botão para submeter o formulário */}
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              sx={{ mt: 2, mb: 2, width: '120px', height: '50px', borderRadius: '15px' }}
-            >
+            {/* Botão de cadastro */}
+            <Button type="submit" variant="contained" color="primary" fullWidth>
               Cadastrar
             </Button>
-            {/* Botão para voltar ao login */}
-            <Button
-              variant="text"
-              color="primary"
-              onClick={handleBackClick}
-              sx={{ mb: 2 }}
-            >
-              Voltar para Login
+            {/* Botão para voltar à tela de login */}
+            <Button onClick={handleBackClick} variant="text" color="primary" fullWidth>
+              Voltar para o login
             </Button>
           </StyledForm>
         </Content>
       </StyledContainer>
-      {/* Snackbar para exibir mensagens de sucesso ou erro */}
-      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleSnackbarClose}>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
         <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
-      </body>
-  </>
-    
+    </>
   );
 };
 
-// Exporta o componente memoizado para evitar renderizações desnecessárias
 export default React.memo(ContainerCadastro);

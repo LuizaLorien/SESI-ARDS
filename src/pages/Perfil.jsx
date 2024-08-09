@@ -26,7 +26,7 @@ import MuiAlert from '@mui/material/Alert';
 import * as EmailValidator from 'email-validator';
 import "../styles/pages.css"
 
-// Estilização personalizada dos componentes
+//oi pessoal fiz alguns coments para voces conseguirem estudar um pouco do que fiz, ja que nao vou poder apresentar
 
 const StyledContainer = styled(Container)({
   display: 'flex',

@@ -16,6 +16,8 @@ import { useNavigate } from 'react-router-dom';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
+//oi pessoal fiz alguns coments para voces conseguirem estudar um pouco do que fiz, ja que nao vou poder apresentar
+
 // Estilização dos componentes usando MUI
 const BodyLogin = styled('div')(({ theme }) => ({
   backgroundColor: '#ffffff',
