@@ -7,13 +7,12 @@ function BasicExample() {
   return (
     <Navbar fixed="top" expand="lg" className="Navbar">
       <Nav >
-        <Dropdown className="dropdown-basic" data-toggle="collapse" data-target="#dropdown">
-          <Dropdown.Toggle as="div">
+        <Dropdown style={{cursor: 'pointer'}}>
+          <Dropdown.Toggle as="div" className="dropdown-basic" data-toggle="collapse" data-target="#dropdown">
             <FaBars style={{ color: 'white' }} />
           </Dropdown.Toggle>
           <Dropdown.Menu id='dropdown'>
             <Dropdown.Item href='/home' id="homeitem">Home</Dropdown.Item>
-            <Dropdown.Item href='/agendar' id='agendaritem'>Agendar</Dropdown.Item>
             <Dropdown.Item href='/calendario' id='calendarioitem'>Calendário</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>

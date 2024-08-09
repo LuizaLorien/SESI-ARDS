@@ -17,13 +17,12 @@ header{
 
 .Navbar {
     overflow: hidden;
-    min-width: 100%;
+    min-width: 1700px;
     height: 65px;
     background-color: var(--deep-blue);
     color: white;
     padding: 10px 35px 10px 35px;
     display: flex;
-    align-items: center;
 }
 
 .navbar-nav{
@@ -31,7 +30,7 @@ header{
     flex-direction: row;
     align-items: center;
     gap: 20px;
-    min-width: 1300px;
+    min-width: 1690px;
 }
 
 .Navbar .brand {
@@ -48,4 +47,23 @@ header{
 
 .nav-profile{
     justify-content: flex-end;
+}
+
+.dropdown-menu{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 450;
+    gap: 5px;
+    margin-top: 35px;
+    height: 60px;
+    width: 100px;
+    padding: 5px;
+    border-radius: 5px;
+    justify-content: center;
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+    background-color: var(--gray);
+}
+.dropdown a {
+    color: white;
 }

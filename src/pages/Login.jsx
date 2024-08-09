@@ -21,7 +21,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 // Estilização dos componentes usando MUI
 const BodyLogin = styled('div')(({ theme }) => ({
   backgroundColor: '#ffffff',
-  minHeight: '100vh',
+  minHeight: '860px',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',

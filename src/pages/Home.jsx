@@ -26,7 +26,6 @@ const GradientBackground = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
   display: 'flex',
   flexDirection: 'column',
-  zIndex: 1,
   boxSizing: 'border-box',
 }));
 
@@ -149,6 +148,7 @@ const HomeLogado = memo(() => {
                   fontWeight: '600',
                   color: '#001330',
                   fontSize: '2.5rem',
+                  padding:'20px',
                   marginLeft: 6
                 }}
               >
@@ -171,7 +171,9 @@ const HomeLogado = memo(() => {
                 sx={{
                   fontFamily: 'Inter-SemiBold, Helvetica',
                   fontWeight: '600',
-                  fontSize: '2.5rem'
+                  fontSize: '2.5rem',
+                  padding:'10px',
+
                 }}
               >
                 Diferenciais
@@ -199,7 +201,9 @@ const HomeLogado = memo(() => {
                 fontFamily: 'Inter-SemiBold, Helvetica',
                 fontWeight: '600',
                 color: '#001330',
-                fontSize: '2.5rem'
+                fontSize: '2.5rem',
+                padding:'10px',
+
               }}
             >
               Contribuições
@@ -209,7 +213,9 @@ const HomeLogado = memo(() => {
                 fontFamily: 'Inter-Regular, Helvetica',
                 color: '#001330',
                 fontSize: '0.875rem',
-                marginTop: 1
+                marginTop: 1,
+                padding:'10px',
+
               }}
             >
               O SESI ARDS facilita a comunicação entre pais e educadores, promovendo um diálogo mais frequente e produtivo, o que contribui diretamente para o sucesso acadêmico e o desenvolvimento integral dos alunos.
